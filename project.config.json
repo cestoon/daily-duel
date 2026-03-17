@@ -60,6 +60,7 @@
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "cloudfunctionRoot": "cloudfunctions/",
   "cloudbaseRoot": "./",
+  "cloudfunctionRootEnv": "cloud1-9gtimm7r81602bae",
   "miniprogramRoot": "./miniprogram/",
   "simulatorPluginLibVersion": {}
 }
