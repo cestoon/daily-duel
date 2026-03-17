@@ -1,6 +1,6 @@
 // cloudfunctions/period/create/index.js
-const { db, _, cloud } = require('../common/db')
-const { COLLECTIONS, PERIOD_STATUS } = require('../common/config')
+const { db, _, cloud } = require('./common/db')
+const { COLLECTIONS, PERIOD_STATUS } = require('./common/config')
 
 function getMondayOfWeek(date) {
   const d = new Date(date)

@@ -1,6 +1,6 @@
 // cloudfunctions/settlement/getBalance/index.js
-const { db, _, cloud } = require('../common/db')
-const { COLLECTIONS } = require('../common/config')
+const { db, _, cloud } = require('./common/db')
+const { COLLECTIONS } = require('./common/config')
 
 function formatDate(date) {
   const year = date.getFullYear()

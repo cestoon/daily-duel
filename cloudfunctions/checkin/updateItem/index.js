@@ -1,6 +1,6 @@
 // cloudfunctions/checkin/updateItem/index.js
-const { db, _, cloud } = require('../common/db')
-const { COLLECTIONS } = require('../common/config')
+const { db, _, cloud } = require('./common/db')
+const { COLLECTIONS } = require('./common/config')
 
 exports.main = async (event) => {
   const { itemId, title, points, time, enabled } = event

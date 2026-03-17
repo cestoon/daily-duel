@@ -1,6 +1,6 @@
 // cloudfunctions/timer/weeklySettlement/index.js
-const { db, _, cloud } = require('../common/db')
-const { COLLECTIONS, SETTLEMENT_STATUS, PERIOD_STATUS } = require('../common/config')
+const { db, _, cloud } = require('./common/db')
+const { COLLECTIONS, SETTLEMENT_STATUS, PERIOD_STATUS } = require('./common/config')
 
 function formatDate(date) {
   const year = date.getFullYear()
@@ -141,7 +141,7 @@ exports.main = async (event) => {
 }
 
 async function calculateBalance(userId, periodId) {
-  const { COLLECTIONS } = require('../common/config')
+  const { COLLECTIONS } = require('./common/config')
 
   // 获取该用户在该周期的所有打卡记录
   const records = await db.collection(COLLECTIONS.CHECKIN_RECORD).where({

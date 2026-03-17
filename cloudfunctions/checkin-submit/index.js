@@ -1,6 +1,6 @@
 // cloudfunctions/checkin/submit/index.js
-const { db, _, cloud } = require('../common/db')
-const { COLLECTIONS, CHECKIN_STATUS } = require('../common/config')
+const { db, _, cloud } = require('./common/db')
+const { COLLECTIONS, CHECKIN_STATUS } = require('./common/config')
 
 function formatDate(date) {
   const year = date.getFullYear()

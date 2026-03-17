@@ -1,6 +1,6 @@
 // cloudfunctions/settlement/confirmPayment/index.js
-const { db, _, cloud } = require('../common/db')
-const { COLLECTIONS, SETTLEMENT_STATUS } = require('../common/config')
+const { db, _, cloud } = require('./common/db')
+const { COLLECTIONS, SETTLEMENT_STATUS } = require('./common/config')
 
 exports.main = async (event) => {
   const { settlementId } = event
