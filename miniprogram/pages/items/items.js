@@ -33,7 +33,7 @@ Page({
 
     try {
       const res = await wx.cloud.callFunction({
-        name: 'checkin/getItems',
+        name: 'checkin-getItems',
         data: { partnerItems: this.data.currentTab === 'partner' }
       })
 
@@ -60,7 +60,7 @@ Page({
 
     try {
       await wx.cloud.callFunction({
-        name: 'checkin/updateItem',
+        name: 'checkin-updateItem',
         data: { itemId: id, enabled: newStatus }
       })
 
@@ -149,7 +149,7 @@ Page({
     try {
       if (this.data.isEdit) {
         await wx.cloud.callFunction({
-          name: 'checkin/updateItem',
+          name: 'checkin-updateItem',
           data: {
             itemId: this.data.editId,
             title,
@@ -159,7 +159,7 @@ Page({
         })
       } else {
         await wx.cloud.callFunction({
-          name: 'checkin/addItem',
+          name: 'checkin-addItem',
           data: { title, points, time }
         })
       }
@@ -192,7 +192,7 @@ Page({
 
     try {
       await wx.cloud.callFunction({
-        name: 'checkin/deleteItem',
+        name: 'checkin-deleteItem',
         data: { itemId: id }
       })
 

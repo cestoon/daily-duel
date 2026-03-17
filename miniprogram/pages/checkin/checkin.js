@@ -36,7 +36,7 @@ Page({
     try {
       // 获取条目列表
       const itemsRes = await wx.cloud.callFunction({
-        name: 'checkin/getItems'
+        name: 'checkin-getItems'
       })
 
       if (itemsRes.result.success) {
@@ -50,7 +50,7 @@ Page({
         // 获取打卡记录
         if (this.data.isToday) {
           const recordsRes = await wx.cloud.callFunction({
-            name: 'checkin/getTodayRecords'
+            name: 'checkin-getTodayRecords'
           })
 
           if (recordsRes.result.success) {
@@ -89,7 +89,7 @@ Page({
 
     try {
       const res = await wx.cloud.callFunction({
-        name: 'checkin/submit',
+        name: 'checkin-submit',
         data: { itemId: id }
       })
 
@@ -145,7 +145,7 @@ Page({
   async loadItemsOnly() {
     try {
       const itemsRes = await wx.cloud.callFunction({
-        name: 'checkin/getItems'
+        name: 'checkin-getItems'
       })
 
       if (itemsRes.result.success) {
@@ -213,7 +213,7 @@ Page({
 
     try {
       const res = await wx.cloud.callFunction({
-        name: 'checkin/addItem',
+        name: 'checkin-addItem',
         data: { title, points, time }
       })
 

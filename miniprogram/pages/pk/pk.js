@@ -55,7 +55,7 @@ Page({
       this.setData({ user: app.globalData.user })
     } else {
       const res = await wx.cloud.callFunction({
-        name: 'user/getInfo'
+        name: 'user-getInfo'
       })
       if (res.result.success) {
         app.globalData.user = res.result.data
@@ -70,7 +70,7 @@ Page({
       this.setData({ partner: app.globalData.partner })
     } else {
       const res = await wx.cloud.callFunction({
-        name: 'user/getPartner'
+        name: 'user-getPartner'
       })
       if (res.result.success) {
         app.globalData.partner = res.result.data
@@ -82,7 +82,7 @@ Page({
 
   async getMyBalance() {
     const res = await wx.cloud.callFunction({
-      name: 'settlement/getBalance'
+      name: 'settlement-getBalance'
     })
     if (res.result.success) {
       this.setData({ myBalance: res.result.data.totalPoints })
@@ -93,7 +93,7 @@ Page({
     if (!this.data.partner) return
 
     const res = await wx.cloud.callFunction({
-      name: 'settlement/getBalance',
+      name: 'settlement-getBalance',
       data: { userId: this.data.partner._id }
     })
     if (res.result.success) {
@@ -103,7 +103,7 @@ Page({
 
   async getTodayStats() {
     const res = await wx.cloud.callFunction({
-      name: 'checkin/getTodayRecords'
+      name: 'checkin-getTodayRecords'
     })
     if (res.result.success) {
       const records = res.result.data
@@ -118,7 +118,7 @@ Page({
 
     // 获取条目总数
     const itemsRes = await wx.cloud.callFunction({
-      name: 'checkin/getItems'
+      name: 'checkin-getItems'
     })
     if (itemsRes.success) {
       const totalItems = itemsRes.data?.length || 0
@@ -133,7 +133,7 @@ Page({
 
     // 获取伙伴的条目总数
     const itemsRes = await wx.cloud.callFunction({
-      name: 'checkin/getItems',
+      name: 'checkin-getItems',
       data: { partnerItems: true }
     })
     if (itemsRes.result.success) {
@@ -141,7 +141,7 @@ Page({
 
       // 获取伙伴今日打卡记录
       const recordsRes = await wx.cloud.callFunction({
-        name: 'checkin/getTodayRecords',
+        name: 'checkin-getTodayRecords',
         data: { userId: this.data.partner._id }
       })
       if (recordsRes.result.success) {

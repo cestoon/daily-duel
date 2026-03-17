@@ -42,7 +42,7 @@ Page({
       })
     } else {
       const res = await wx.cloud.callFunction({
-        name: 'user/getInfo'
+        name: 'user-getInfo'
       })
       if (res.result.success) {
         app.globalData.user = res.result.data
@@ -63,7 +63,7 @@ Page({
       })
     } else {
       const res = await wx.cloud.callFunction({
-        name: 'user/getPartner'
+        name: 'user-getPartner'
       })
       if (res.result.success) {
         app.globalData.partner = res.result.data
@@ -116,7 +116,7 @@ Page({
 
     try {
       const res = await wx.cloud.callFunction({
-        name: 'user/bindPartner',
+        name: 'user-bindPartner',
         data: { partnerCode: this.data.bindCode }
       })
 

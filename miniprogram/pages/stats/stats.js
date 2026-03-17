@@ -61,13 +61,13 @@ Page({
   async loadWeekStats() {
     try {
       const myBalanceRes = await wx.cloud.callFunction({
-        name: 'settlement/getBalance'
+        name: 'settlement-getBalance'
       })
 
       let partnerPoints = 0
       if (app.globalData.partner) {
         const partnerBalanceRes = await wx.cloud.callFunction({
-          name: 'settlement/getBalance',
+          name: 'settlement-getBalance',
           data: { userId: app.globalData.partner._id }
         })
         if (partnerBalanceRes.result.success) {
@@ -112,7 +112,7 @@ Page({
   async loadItemStats() {
     // 获取用户的条目列表
     const itemsRes = await wx.cloud.callFunction({
-      name: 'checkin/getItems'
+      name: 'checkin-getItems'
     })
 
     if (itemsRes.result.success) {

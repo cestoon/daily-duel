@@ -22,7 +22,7 @@ Page({
       this.setData({ userId: app.globalData.user._id })
     } else {
       const res = await wx.cloud.callFunction({
-        name: 'user/getInfo'
+        name: 'user-getInfo'
       })
       if (res.result.success) {
         app.globalData.user = res.result.data
@@ -37,7 +37,7 @@ Page({
 
     try {
       const res = await wx.cloud.callFunction({
-        name: 'settlement/getList'
+        name: 'settlement-getList'
       })
 
       if (res.result.success) {
@@ -69,7 +69,7 @@ Page({
 
     try {
       const res = await wx.cloud.callFunction({
-        name: 'settlement/confirmPayment',
+        name: 'settlement-confirmPayment',
         data: { settlementId: id }
       })
 

@@ -30,7 +30,7 @@ Page({
   async getPartnerInfo() {
     try {
       const res = await wx.cloud.callFunction({
-        name: 'user/getPartner'
+        name: 'user-getPartner'
       })
       if (res.result.success && res.result.data) {
         app.globalData.partner = res.result.data
@@ -57,7 +57,7 @@ Page({
 
       // 调用登录云函数
       const res = await wx.cloud.callFunction({
-        name: 'user/login',
+        name: 'user-login',
         data: {
           nickName: userInfoRes.userInfo.nickName,
           avatarUrl: userInfoRes.userInfo.avatarUrl

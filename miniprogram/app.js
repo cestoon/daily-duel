@@ -36,7 +36,7 @@ App({
   async refreshUserInfo() {
     try {
       const res = await wx.cloud.callFunction({
-        name: 'user/getInfo'
+        name: 'user-getInfo'
       })
       if (res.result.success) {
         this.globalData.user = res.result.data
