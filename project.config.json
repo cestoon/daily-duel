@@ -40,17 +40,25 @@
     },
     "useCompilerPlugins": [
       "typescript"
-    ]
+    ],
+    "compileWorklet": false,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
   "compileType": "miniprogram",
   "libVersion": "2.32.3",
-  "appid": "your-appid-here",
-  "projectname": "couple-checkin-pk",
+  "appid": "wxd5ddddb5808e1066",
+  "projectname": "Daily Duel",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
-  "cloudfunctionRoot": "./cloudfunctions"
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "miniprogramRoot": "./miniprogram/",
+  "simulatorPluginLibVersion": {}
 }

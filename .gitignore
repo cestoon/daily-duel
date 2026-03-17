@@ -1,5 +1,9 @@
 # 微信小程序
 miniprogram/sitemap.json
+app.json
+app.js
+app.wxss
+sitemap.json
 
 # 云函数依赖
 cloudfunctions/*/node_modules/
