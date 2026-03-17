@@ -1,0 +1,36 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <view class="login-container" wx:if="{{!hasLogin}}">
+    <view class="login-box">
+      <image class="logo" src="/assets/logo.png" mode="aspectFit"></image>
+      <text class="app-name">情侣打卡PK</text>
+      <text class="app-desc">让爱与习惯一起成长</text>
+
+      <button class="btn btn-primary" bindtap="handleLogin" disabled="{{logining}}">
+        {{logining ? '登录中...' : '微信登录'}}
+      </button>
+
+      <view class="tips">
+        <text class="tip-icon">💡</text>
+        <text class="tip-text">第一次使用需要绑定伙伴关系</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="welcome-container" wx:else>
+    <view class="welcome-box">
+      <image class="avatar" src="{{user.avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+      <text class="welcome-text">欢迎回来，{{user.nickName}}</text>
+      <text class="partner-text" wx:if="{{partner}}">
+        搭档：{{partner.nickName}}
+      </text>
+      <text class="partner-text warning-color" wx:else>
+        还没有绑定伙伴
+      </text>
+
+      <button class="btn btn-primary" bindtap="goToPK">
+        开始PK
+      </button>
+    </view>
+  </view>
+</view>

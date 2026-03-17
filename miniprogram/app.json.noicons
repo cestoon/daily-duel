@@ -1,0 +1,45 @@
+# miniprogram/app.json (更新版 - 暂时使用文字标签)
+{
+  "pages": [
+    "pages/index/index",
+    "pages/pk/pk",
+    "pages/checkin/checkin",
+    "pages/items/items",
+    "pages/settlement/settlement",
+    "pages/stats/stats",
+    "pages/settings/settings"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FF6B81",
+    "navigationBarTitleText": "情侣打卡PK",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF6B81",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/pk/pk",
+        "text": "PK对战"
+      },
+      {
+        "pagePath": "pages/checkin/checkin",
+        "text": "今日打卡"
+      },
+      {
+        "pagePath": "pages/items/items",
+        "text": "条目管理"
+      },
+      {
+        "pagePath": "pages/settlement/settlement",
+        "text": "结算"
+      }
+    ]
+  },
+  "cloud": true,
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

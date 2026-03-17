@@ -1,0 +1,151 @@
+/* pages/stats/stats.wxss */
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.stat-card {
+  background: white;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.stat-value {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.week-stats {
+  padding: 20rpx 0;
+}
+
+.week-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+}
+
+.week-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.week-value {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.trend-chart {
+  padding: 20rpx 0;
+}
+
+.chart-bars {
+  justify-content: space-around;
+  height: 300rpx;
+  align-items: flex-end;
+}
+
+.bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.bar-wrapper {
+  flex: 1;
+  width: 40rpx;
+  background: #F5F5F5;
+  border-radius: 20rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar-fill {
+  width: 100%;
+  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  border-radius: 20rpx;
+  min-height: 4rpx;
+  transition: height 0.5s ease;
+}
+
+.bar-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.bar-value {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.item-stats {
+  padding: 20rpx 0;
+}
+
+.item-stat-item {
+  margin-bottom: 30rpx;
+}
+
+.item-stat-item:last-child {
+  margin-bottom: 0;
+}
+
+.item-stat-header {
+  margin-bottom: 12rpx;
+}
+
+.item-stat-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.item-stat-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #FF6B81;
+}
+
+.progress-bar {
+  height: 12rpx;
+  background: #F5F5F5;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-bottom: 8rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  border-radius: 6rpx;
+  transition: width 0.5s ease;
+}
+
+.item-stat-rate {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  text-align: right;
+}

@@ -1,0 +1,170 @@
+/* pages/settlement/settlement.wxss */
+.settlement-list {
+  min-height: calc(100vh - 40rpx);
+}
+
+.settlement-card {
+  background: white;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  padding: 30rpx;
+  color: white;
+}
+
+.period-info {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.period-date {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.status-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.settlement-amount {
+  text-align: right;
+}
+
+.amount-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  display: block;
+  line-height: 1;
+}
+
+.amount-unit {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.card-body {
+  padding: 30rpx;
+}
+
+.settlement-users {
+  margin-bottom: 30rpx;
+  padding: 20rpx;
+  background: #F5F5F5;
+  border-radius: 16rpx;
+}
+
+.user-role {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.user-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-bottom: 12rpx;
+  border: 3rpx solid #E0E0E0;
+}
+
+.user-role.payer .user-avatar {
+  border-color: #FF6B81;
+}
+
+.user-role.payee .user-avatar {
+  border-color: #4CAF50;
+}
+
+.user-name {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.role-label {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.arrow {
+  font-size: 40rpx;
+  color: #FF6B81;
+  align-self: center;
+}
+
+.settlement-status {
+  margin-bottom: 24rpx;
+  padding: 20rpx;
+  background: #F5F5F5;
+  border-radius: 16rpx;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.status-item:last-child {
+  margin-bottom: 0;
+}
+
+.status-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.status-value {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.status-value.success {
+  color: #4CAF50;
+}
+
+.status-value.warning {
+  color: #FF9800;
+}
+
+.settlement-actions {
+  gap: 20rpx;
+}
+
+.settlement-actions .btn {
+  flex: 1;
+}
+
+.settlement-actions .btn.disabled {
+  opacity: 0.5;
+  background: #E0E0E0;
+  color: #999;
+}
+
+.settlement-time {
+  text-align: center;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #F5F5F5;
+}
+
+.empty-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 16rpx;
+}

@@ -1,0 +1,211 @@
+/* pages/checkin/checkin.wxss */
+.date-selector {
+  background: white;
+  padding: 20rpx 30rpx;
+  margin-bottom: 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.date-nav {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F5F5F5;
+  border-radius: 30rpx;
+  font-size: 32rpx;
+  color: #666;
+}
+
+.date-nav[disabled] {
+  opacity: 0.3;
+}
+
+.date-display {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.date-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.date-label {
+  font-size: 24rpx;
+  color: #FF6B81;
+  margin-top: 8rpx;
+}
+
+.checkin-list {
+  min-height: calc(100vh - 400rpx);
+}
+
+.checkin-item {
+  background: white;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s;
+}
+
+.checkin-item.checked {
+  background: #F0F9F4;
+  border: 2rpx solid #4CAF50;
+}
+
+.checkin-item.unchecked {
+  border: 2rpx solid #E0E0E0;
+}
+
+.item-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.check-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  border: 3rpx solid #E0E0E0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  font-size: 36rpx;
+  color: #E0E0E0;
+  transition: all 0.3s;
+}
+
+.check-icon.checked {
+  background: #4CAF50;
+  border-color: #4CAF50;
+  color: white;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.item-meta {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.status-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+
+.status-tag.completed {
+  background: #E8F5E9;
+  color: #4CAF50;
+}
+
+.status-tag.pending {
+  background: #FFF3E0;
+  color: #FF9800;
+}
+
+.status-tag.missed {
+  background: #FFEBEE;
+  color: #F44336;
+}
+
+.add-button {
+  position: fixed;
+  bottom: 100rpx;
+  right: 40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  border-radius: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(255, 107, 129, 0.4);
+  font-size: 60rpx;
+  color: white;
+  font-weight: bold;
+  z-index: 100;
+}
+
+.add-button:active {
+  transform: scale(0.95);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  width: 80%;
+  max-width: 600rpx;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40rpx;
+  text-align: center;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.picker-value {
+  padding: 20rpx;
+  border: 2rpx solid #E0E0E0;
+  border-radius: 12rpx;
+  background: white;
+  color: #333;
+}
+
+.modal-actions {
+  margin-top: 40rpx;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  margin: 0 10rpx;
+}

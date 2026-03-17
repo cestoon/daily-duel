@@ -1,0 +1,112 @@
+<!-- pages/settings/settings.wxml -->
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="card user-info-card">
+    <view class="user-header flex">
+      <image class="user-avatar" src="{{user.avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-details">
+        <text class="user-name">{{user.nickName}}</text>
+        <text class="user-id">ID: {{userId}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 伙伴信息 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">我的搭档</text>
+    </view>
+    <view class="card-body">
+      <view wx:if="{{partner}}">
+        <view class="partner-item flex">
+          <image class="partner-avatar" src="{{partner.avatarUrl}}" mode="aspectFill"></image>
+          <view class="partner-info">
+            <text class="partner-name">{{partner.nickName}}</text>
+            <text class="partner-id">ID: {{partnerId}}</text>
+          </view>
+        </view>
+        <button class="btn btn-danger btn-full" bindtap="unbindPartner">解绑搭档</button>
+      </view>
+      <view wx:else class="empty-partner">
+        <text class="empty-icon">💕</text>
+        <text class="empty-text">还没有绑定搭档</text>
+        <button class="btn btn-primary btn-full" bindtap="showBindModal">绑定搭档</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提醒设置 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">打卡提醒</text>
+    </view>
+    <view class="card-body">
+      <view class="setting-item flex-between">
+        <text class="setting-label">每日提醒</text>
+        <switch
+          class="switch"
+          checked="{{reminderEnabled}}"
+          bindchange="toggleReminder"
+        />
+      </view>
+      <view class="setting-item flex-between" wx:if="{{reminderEnabled}}">
+        <text class="setting-label">提醒时间</text>
+        <picker mode="time" value="{{reminderTime}}" bindchange="onReminderTimeChange">
+          <view class="picker-value">{{reminderTime}}</view>
+        </picker>
+      </view>
+    </view>
+  </view>
+
+  <!-- 其他设置 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">其他</text>
+    </view>
+    <view class="card-body">
+      <view class="setting-item" bindtap="showAbout">
+        <text class="setting-label">关于我们</text>
+        <text class="setting-arrow">›</text>
+      </view>
+      <view class="setting-item" bindtap="clearCache">
+        <text class="setting-label">清除缓存</text>
+        <text class="setting-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 绑定搭档弹窗 -->
+  <view class="modal" wx:if="{{showBindModal}}" catchtap="hideBindModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-title">绑定搭档</view>
+      <view class="form-item">
+        <text class="form-label">请输入搭档的用户ID</text>
+        <input class="input" placeholder="用户ID" value="{{bindCode}}" bindinput="onBindCodeInput" />
+      </view>
+      <view class="form-tips">
+        <text class="tips-icon">💡</text>
+        <text class="tips-text">让搭档在设置页面查看他们的用户ID</text>
+      </view>
+      <view class="modal-actions flex-between">
+        <button class="btn btn-secondary" bindtap="hideBindModal">取消</button>
+        <button class="btn btn-primary" bindtap="bindPartner">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于弹窗 -->
+  <view class="modal" wx:if="{{showAboutModal}}" catchtap="hideAboutModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-title">关于我们</view>
+      <view class="about-content">
+        <text class="about-text">情侣打卡PK小程序</text>
+        <text class="about-version">版本 1.0.0</text>
+        <text class="about-desc">让爱与习惯一起成长</text>
+        <view class="about-links">
+          <button class="btn btn-secondary btn-full" open-type="contact">联系客服</button>
+        </view>
+      </view>
+      <button class="btn btn-primary btn-full" bindtap="hideAboutModal">关闭</button>
+    </view>
+  </view>
+</view>

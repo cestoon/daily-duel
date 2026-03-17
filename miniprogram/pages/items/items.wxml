@@ -1,0 +1,79 @@
+<!-- pages/items/items.wxml -->
+<view class="container">
+  <!-- 标签切换 -->
+  <view class="tabs flex">
+    <view class="tab {{currentTab === 'my' ? 'active' : ''}}" bindtap="switchTab" data-tab="my">
+      我的条目
+    </view>
+    <view class="tab {{currentTab === 'partner' ? 'active' : ''}}" bindtap="switchTab" data-tab="partner">
+      对方条目
+    </view>
+  </view>
+
+  <!-- 条目列表 -->
+  <view class="items-list">
+    <view wx:for="{{items}}" wx:key="_id" class="item-card">
+      <view class="item-header flex-between">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-switch">
+          <switch
+            class="switch"
+            checked="{{item.enabled}}"
+            bindchange="toggleEnable"
+            data-id="{{item._id}}"
+            disabled="{{!canEdit}}"
+          />
+        </view>
+      </view>
+      <view class="item-meta flex-between">
+        <text class="meta-item">分数: {{item.points}}</text>
+        <text class="meta-item">时间: {{item.time}}</text>
+      </view>
+      <view class="item-actions" wx:if="{{canEdit}}">
+        <button class="btn-mini btn-edit" bindtap="editItem" data-id="{{item._id}}">编辑</button>
+        <button class="btn-mini btn-delete" bindtap="deleteItem" data-id="{{item._id}}">删除</button>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{items.length === 0 && !loading}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">{{canEdit ? '还没有打卡条目' : '对方还没有条目'}}</text>
+    </view>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-button" bindtap="showAddModal" wx:if="{{canEdit}}">
+    <text>+</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>
+
+<!-- 添加/编辑条目弹窗 -->
+<view class="modal" wx:if="{{showModal}}" catchtap="hideModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-title">{{isEdit ? '编辑' : '添加'}}条目</view>
+    <view class="form-item">
+      <text class="form-label">条目标题</text>
+      <input class="input" placeholder="如：晨跑、读书" value="{{newItem.title}}" bindinput="onTitleInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">分数</text>
+      <input class="input" type="number" placeholder="1" value="{{newItem.points}}" bindinput="onPointsInput" />
+    </view>
+    <view class="form-item">
+      <text class="form-label">打卡时间</text>
+      <picker mode="time" value="{{newItem.time}}" bindchange="onTimeChange">
+        <view class="picker-value">{{newItem.time}}</view>
+      </picker>
+    </view>
+    <view class="modal-actions flex-between">
+      <button class="btn btn-secondary" bindtap="hideModal">取消</button>
+      <button class="btn btn-primary" bindtap="saveItem">确定</button>
+    </view>
+  </view>
+</view>

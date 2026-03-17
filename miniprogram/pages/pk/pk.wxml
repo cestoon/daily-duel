@@ -1,0 +1,92 @@
+<!-- pages/pk/pk.wxml -->
+<view class="container">
+  <!-- 用户信息 -->
+  <view class="user-info flex-between">
+    <view class="user-left flex">
+      <image class="avatar" src="{{user.avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+      <view>
+        <text class="user-name">{{user.nickName}}</text>
+        <text class="user-points primary-color">积分: {{myBalance}}</text>
+      </view>
+    </view>
+    <text class="vs">VS</text>
+    <view class="user-right flex">
+      <view class="text-right">
+        <text class="user-name">{{partner.nickName || '未绑定'}}</text>
+        <text class="user-points secondary-color">积分: {{partnerBalance}}</text>
+      </view>
+      <image class="avatar" src="{{partner.avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+    </view>
+  </view>
+
+  <!-- PK血条 -->
+  <view class="pk-bar-container">
+    <view class="pk-title">
+      <text>本周PK</text>
+      <text class="period-info">{{periodInfo || '进行中'}}</text>
+    </view>
+
+    <view class="health-bar-container">
+      <view class="health-bar-fill" style="width: {{myPercentage}}%; background: {{myBalance >= partnerBalance ? 'linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%)' : '#E0E0E0'}};">
+        <text class="health-bar-text" style="color: {{myBalance >= partnerBalance ? 'white' : '#999'}};">{{myBalance}}</text>
+      </view>
+      <view class="health-bar-fill" style="width: {{partnerPercentage}}%; background: {{partnerBalance >= myBalance ? 'linear-gradient(135deg, #FFA07A 0%, #FFD700 100%)' : '#E0E0E0'}}; margin-left: -5rpx;">
+        <text class="health-bar-text" style="color: {{partnerBalance >= myBalance ? 'white' : '#999'}};">{{partnerBalance}}</text>
+      </view>
+    </view>
+
+    <view class="pk-status">
+      <text wx:if="{{myBalance > partnerBalance}}" class="success-color">领先 {{myBalance - partnerBalance}} 分</text>
+      <text wx:elif="{{myBalance < partnerBalance}}" class="danger-color">落后 {{partnerBalance - myBalance}} 分</text>
+      <text wx:else class="text-small">平局</text>
+    </view>
+  </view>
+
+  <!-- 今日打卡统计 -->
+  <view class="card">
+    <view class="subtitle">今日打卡</view>
+    <view class="today-stats flex-between">
+      <view class="stat-item">
+        <text class="stat-value success-color">{{todayChecked}}</text>
+        <text class="stat-label">已完成</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value warning-color">{{todayPending}}</text>
+        <text class="stat-label">待完成</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value danger-color">{{todayMissed}}</text>
+        <text class="stat-label">漏卡</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 伙伴今日打卡 -->
+  <view class="card" wx:if="{{partner.nickName}}">
+    <view class="subtitle flex-between">
+      <text>{{partner.nickName}} 今日打卡</text>
+      <text class="text-small">{{partnerTodayChecked}}/{{partnerTotalItems}}</text>
+    </view>
+    <view class="partner-progress">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{partnerProgress}}%;"></view>
+      </view>
+      <text class="progress-text">{{partnerProgress}}%</text>
+    </view>
+  </view>
+
+  <!-- 快速操作 -->
+  <view class="quick-actions flex-between">
+    <button class="btn btn-primary" bindtap="goToCheckin">
+      今日打卡
+    </button>
+    <button class="btn btn-secondary" bindtap="goToSettlement">
+      查看结算
+    </button>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

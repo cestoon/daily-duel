@@ -1,0 +1,13 @@
+{
+  "name": "couple-checkin-pk",
+  "version": "1.0.0",
+  "description": "情侣打卡PK小程序",
+  "main": "",
+  "scripts": {
+    "dev": "",
+    "build": ""
+  },
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,167 @@
+/* pages/pk/pk.wxss */
+.user-info {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.user-left,
+.user-right {
+  flex: 1;
+}
+
+.avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 4rpx solid #FF6B81;
+}
+
+.user-right .avatar {
+  margin-right: 0;
+  margin-left: 20rpx;
+  border-color: #FFA07A;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.user-name {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.user-points {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.vs {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #FF6B81;
+  margin: 0 20rpx;
+}
+
+.pk-bar-container {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.pk-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.pk-title text:first-child {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.period-info {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.health-bar-container {
+  height: 80rpx;
+  background: #E0E0E0;
+  border-radius: 40rpx;
+  overflow: hidden;
+  display: flex;
+  margin-bottom: 16rpx;
+}
+
+.health-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.health-bar-text {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.pk-status {
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.today-stats {
+  padding: 20rpx 0;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+}
+
+.stat-value {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.partner-progress {
+  padding: 20rpx 0;
+}
+
+.progress-bar {
+  height: 20rpx;
+  background: #E0E0E0;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #FFA07A 0%, #FFD700 100%);
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  display: block;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.quick-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx 30rpx;
+  background: white;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.quick-actions .btn {
+  flex: 1;
+  margin: 0 10rpx;
+}

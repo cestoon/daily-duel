@@ -1,0 +1,81 @@
+<!-- pages/stats/stats.wxml -->
+<view class="container">
+  <!-- 数据概览 -->
+  <view class="stats-overview">
+    <view class="stat-card">
+      <text class="stat-value primary-color">{{stats.totalDays}}</text>
+      <text class="stat-label">总天数</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-value success-color">{{stats.totalCheckins}}</text>
+      <text class="stat-label">总打卡</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-value warning-color">{{stats.totalMissed}}</text>
+      <text class="stat-label">漏卡</text>
+    </view>
+    <view class="stat-card">
+      <text class="stat-value">{{stats.completionRate}}%</text>
+      <text class="stat-label">完成率</text>
+    </view>
+  </view>
+
+  <!-- 本周统计 -->
+  <view class="card">
+    <view class="subtitle">本周统计</view>
+    <view class="week-stats flex-between">
+      <view class="week-item">
+        <text class="week-label">我的积分</text>
+        <text class="week-value primary-color">{{weekStats.myPoints}}</text>
+      </view>
+      <view class="week-item">
+        <text class="week-label">对方积分</text>
+        <text class="week-value secondary-color">{{weekStats.partnerPoints}}</text>
+      </view>
+      <view class="week-item">
+        <text class="week-label">差距</text>
+        <text class="week-value {{weekStats.diff >= 0 ? 'success-color' : 'danger-color'}}">
+          {{weekStats.diff >= 0 ? '+' : ''}}{{weekStats.diff}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 打卡趋势 -->
+  <view class="card">
+    <view class="subtitle">打卡趋势（最近7天）</view>
+    <view class="trend-chart">
+      <view class="chart-bars flex">
+        <view wx:for="{{trend}}" wx:key="date" class="bar-item">
+          <view class="bar-wrapper">
+            <view class="bar-fill" style="height: {{item.percentage}}%;"></view>
+          </view>
+          <text class="bar-label">{{item.day}}</text>
+          <text class="bar-value">{{item.count}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 条目统计 -->
+  <view class="card">
+    <view class="subtitle">条目完成度</view>
+    <view class="item-stats">
+      <view wx:for="{{itemStats}}" wx:key="title" class="item-stat-item">
+        <view class="item-stat-header flex-between">
+          <text class="item-stat-title">{{item.title}}</text>
+          <text class="item-stat-value">{{item.completed}}/{{item.total}}</text>
+        </view>
+        <view class="progress-bar">
+          <view class="progress-fill" style="width: {{item.percentage}}%;"></view>
+        </view>
+        <text class="item-stat-rate">{{item.percentage}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

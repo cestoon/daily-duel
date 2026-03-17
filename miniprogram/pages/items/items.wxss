@@ -1,0 +1,160 @@
+/* pages/items/items.wxss */
+.tabs {
+  background: white;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #999;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  color: white;
+  font-weight: 500;
+}
+
+.items-list {
+  min-height: calc(100vh - 400rpx);
+}
+
+.item-card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.item-header {
+  margin-bottom: 16rpx;
+}
+
+.item-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.item-meta {
+  padding: 16rpx 0;
+  border-top: 2rpx solid #F5F5F5;
+  border-bottom: 2rpx solid #F5F5F5;
+  margin-bottom: 16rpx;
+}
+
+.meta-item {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.item-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+}
+
+.btn-mini {
+  padding: 12rpx 24rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  border: none;
+}
+
+.btn-edit {
+  background: #E3F2FD;
+  color: #2196F3;
+}
+
+.btn-delete {
+  background: #FFEBEE;
+  color: #F44336;
+}
+
+.add-button {
+  position: fixed;
+  bottom: 100rpx;
+  right: 40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  border-radius: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(255, 107, 129, 0.4);
+  font-size: 60rpx;
+  color: white;
+  font-weight: bold;
+  z-index: 100;
+}
+
+.add-button:active {
+  transform: scale(0.95);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  width: 80%;
+  max-width: 600rpx;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40rpx;
+  text-align: center;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.picker-value {
+  padding: 20rpx;
+  border: 2rpx solid #E0E0E0;
+  border-radius: 12rpx;
+  background: white;
+  color: #333;
+}
+
+.modal-actions {
+  margin-top: 40rpx;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  margin: 0 10rpx;
+}
