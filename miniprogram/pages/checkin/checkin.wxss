@@ -131,81 +131,10 @@
   color: #F44336;
 }
 
-.add-button {
-  position: fixed;
-  bottom: 100rpx;
-  right: 40rpx;
-  width: 120rpx;
-  height: 120rpx;
-  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
-  border-radius: 60rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8rpx 20rpx rgba(255, 107, 129, 0.4);
-  font-size: 60rpx;
-  color: white;
-  font-weight: bold;
-  z-index: 100;
-}
-
-.add-button:active {
-  transform: scale(0.95);
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 20rpx;
-  padding: 40rpx;
-  width: 80%;
-  max-width: 600rpx;
-}
-
-.modal-title {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 40rpx;
-  text-align: center;
-}
-
-.form-item {
-  margin-bottom: 30rpx;
-}
-
-.form-label {
+.empty-hint {
   display: block;
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 16rpx;
-}
-
-.picker-value {
-  padding: 20rpx;
-  border: 2rpx solid #E0E0E0;
-  border-radius: 12rpx;
-  background: white;
-  color: #333;
-}
-
-.modal-actions {
-  margin-top: 40rpx;
-}
-
-.modal-actions .btn {
-  flex: 1;
-  margin: 0 10rpx;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 16rpx;
+  margin-bottom: 40rpx;
 }

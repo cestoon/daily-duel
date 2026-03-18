@@ -6,13 +6,7 @@ Page({
     currentDate: '',
     isToday: true,
     items: [],
-    loading: true,
-    showModal: false,
-    newItem: {
-      title: '',
-      points: 1,
-      time: '00:00'
-    }
+    loading: true
   },
 
   onLoad() {
@@ -160,82 +154,6 @@ Page({
       }
     } catch (e) {
       console.error('加载条目失败', e)
-    }
-  },
-
-  showAddModal() {
-    this.setData({
-      showModal: true,
-      newItem: {
-        title: '',
-        points: 1,
-        time: '00:00'
-      }
-    })
-  },
-
-  hideModal() {
-    this.setData({ showModal: false })
-  },
-
-  stopPropagation() {
-    // 阻止冒泡
-  },
-
-  onTitleInput(e) {
-    this.setData({
-      'newItem.title': e.detail.value
-    })
-  },
-
-  onPointsInput(e) {
-    this.setData({
-      'newItem.points': parseInt(e.detail.value) || 1
-    })
-  },
-
-  onTimeChange(e) {
-    this.setData({
-      'newItem.time': e.detail.value
-    })
-  },
-
-  async addItem() {
-    const { title, points, time } = this.data.newItem
-
-    if (!title.trim()) {
-      wx.showToast({
-        title: '请输入条目标题',
-        icon: 'none'
-      })
-      return
-    }
-
-    try {
-      const res = await wx.cloud.callFunction({
-        name: 'checkin-addItem',
-        data: { title, points, time }
-      })
-
-      if (res.result.success) {
-        wx.showToast({
-          title: '添加成功',
-          icon: 'success'
-        })
-        this.hideModal()
-        this.loadData()
-      } else {
-        wx.showToast({
-          title: res.result.message || '添加失败',
-          icon: 'error'
-        })
-      }
-    } catch (e) {
-      console.error('添加条目失败', e)
-      wx.showToast({
-        title: '添加失败',
-        icon: 'error'
-      })
     }
   },
 
