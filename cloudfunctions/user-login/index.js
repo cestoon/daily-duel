@@ -2,6 +2,39 @@
 const { db, _, cloud } = require('./common/db')
 const { COLLECTIONS } = require('./common/config')
 
+// 生成6位数字邀请码
+function generateInviteCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString()
+}
+
+// 检查邀请码是否已存在
+async function isInviteCodeExists(code) {
+  const result = await db.collection(COLLECTIONS.USER).where({
+    inviteCode: code
+  }).count()
+  return result.total > 0
+}
+
+// 生成唯一邀请码
+async function generateUniqueInviteCode() {
+  let code
+  let exists = true
+  let attempts = 0
+  
+  while (exists && attempts < 10) {
+    code = generateInviteCode()
+    exists = await isInviteCodeExists(code)
+    attempts++
+  }
+  
+  if (exists) {
+    // 如果10次都重复，使用时间戳保证唯一
+    code = Date.now().toString().slice(-6)
+  }
+  
+  return code
+}
+
 exports.main = async (event) => {
   const { nickName, avatarUrl } = event
   const wxContext = cloud.getWXContext()
@@ -18,11 +51,14 @@ exports.main = async (event) => {
     if (userResult.data.length === 0) {
       // 创建新用户
       const now = new Date()
+      const inviteCode = await generateUniqueInviteCode()
+      
       const createResult = await db.collection(COLLECTIONS.USER).add({
         data: {
           openid,
           nickName,
           avatarUrl,
+          inviteCode,
           partnerId: null,
           currentPeriodId: null,
           createdAt: now,
@@ -36,13 +72,29 @@ exports.main = async (event) => {
     } else {
       // 更新用户信息
       user = userResult.data[0]
-      await db.collection(COLLECTIONS.USER).doc(user._id).update({
-        data: {
-          nickName,
-          avatarUrl,
-          updatedAt: new Date()
-        }
-      })
+      
+      // 如果老用户没有邀请码，生成一个
+      if (!user.inviteCode) {
+        const inviteCode = await generateUniqueInviteCode()
+        await db.collection(COLLECTIONS.USER).doc(user._id).update({
+          data: {
+            inviteCode,
+            nickName,
+            avatarUrl,
+            updatedAt: new Date()
+          }
+        })
+        user.inviteCode = inviteCode
+      } else {
+        await db.collection(COLLECTIONS.USER).doc(user._id).update({
+          data: {
+            nickName,
+            avatarUrl,
+            updatedAt: new Date()
+          }
+        })
+      }
+      
       user.nickName = nickName
       user.avatarUrl = avatarUrl
     }

@@ -16,13 +16,13 @@
 
   <!-- 打卡列表 -->
   <view class="checkin-list">
-    <view wx:for="{{items}}" wx:key="_id" class="checkin-item {{item.checked ? 'checked' : ''}}" bindtap="handleCheckin" data-id="{{item._id}}">
+    <view wx:for="{{items}}" wx:key="_id" class="checkin-item {{item.status}}" bindtap="handleCheckin" data-id="{{item._id}}">
       <view class="item-left flex">
-        <view class="check-icon {{item.checked ? 'checked' : ''}}">
-          <text>{{item.checked ? '✓' : '○'}}</text>
+        <view class="check-icon {{item.status}}">
+          <text>{{item.status === 'completed' ? '✓' : item.status === 'missed' ? '✗' : '○'}}</text>
         </view>
         <view class="item-info">
-          <text class="item-title">{{item.title}}</text>
+          <text class="item-title {{item.status === 'missed' ? 'missed-title' : ''}}">{{item.title}}</text>
           <text class="item-meta">{{item.time}} • {{item.points}}分</text>
         </view>
       </view>

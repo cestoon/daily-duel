@@ -10,30 +10,36 @@ function formatDate(date) {
 }
 
 exports.main = async (event) => {
+  const { userId } = event
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
 
   try {
-    // 获取用户
-    const userResult = await db.collection(COLLECTIONS.USER).where({
-      openid
-    }).get()
+    let targetUserId = userId
 
-    if (userResult.data.length === 0) {
-      return {
-        success: false,
-        message: '用户不存在'
+    // 如果没有指定 userId，使用当前用户
+    if (!targetUserId) {
+      // 获取用户
+      const userResult = await db.collection(COLLECTIONS.USER).where({
+        openid
+      }).get()
+
+      if (userResult.data.length === 0) {
+        return {
+          success: false,
+          message: '用户不存在'
+        }
       }
-    }
 
-    const user = userResult.data[0]
+      targetUserId = userResult.data[0]._id
+    }
 
     const today = new Date()
     const dateStr = formatDate(today)
 
     // 获取今日打卡记录
     const recordsResult = await db.collection(COLLECTIONS.CHECKIN_RECORD).where({
-      userId: user._id,
+      userId: targetUserId,
       date: dateStr
     }).orderBy('createdAt', 'desc').get()
 

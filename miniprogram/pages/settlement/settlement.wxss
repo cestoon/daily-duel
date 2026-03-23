@@ -12,9 +12,10 @@
 }
 
 .card-header {
-  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
   padding: 30rpx;
   color: white;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.3);
 }
 
 .period-info {
@@ -80,7 +81,7 @@
 }
 
 .user-role.payer .user-avatar {
-  border-color: #FF6B81;
+  border-color: #F44336;
 }
 
 .user-role.payee .user-avatar {

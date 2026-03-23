@@ -10,13 +10,13 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FF6B81",
+    "navigationBarBackgroundColor": "#FF6B35",
     "navigationBarTitleText": "情侣打卡PK",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#FF6B81",
+    "selectedColor": "#FF6B35",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
@@ -43,6 +43,12 @@
         "text": "结算",
         "iconPath": "assets/icons/settlement.png",
         "selectedIconPath": "assets/icons/settlement-active.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "设置",
+        "iconPath": "assets/icons/settings.png",
+        "selectedIconPath": "assets/icons/settings-active.png"
       }
     ]
   },

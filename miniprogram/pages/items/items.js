@@ -7,6 +7,7 @@ Page({
     showModal: false,
     isEdit: false,
     editId: null,
+    canEdit: true,
     newItem: {
       title: '',
       points: 1,
@@ -24,8 +25,14 @@ Page({
 
   switchTab(e) {
     const { tab } = e.currentTarget.dataset
-    this.setData({ currentTab: tab })
-    this.loadData()
+    this.setData({
+      currentTab: tab,
+      canEdit: tab === 'my'
+    })
+    // 延迟一下等待 setData 完成
+    setTimeout(() => {
+      this.loadData()
+    }, 50)
   },
 
   async loadData() {
@@ -38,17 +45,27 @@ Page({
       })
 
       if (res.result.success) {
-        this.setData({ items: res.result.data })
+        this.setData({ items: res.result.data || [] })
+      } else {
+        // 如果获取失败（如未绑定伙伴），清空列表并提示
+        if (this.data.currentTab === 'partner') {
+          this.setData({ items: [] })
+          if (res.result.message) {
+            wx.showToast({
+              title: res.result.message,
+              icon: 'none'
+            })
+          }
+        }
       }
     } catch (e) {
       console.error('加载数据失败', e)
+      if (this.data.currentTab === 'partner') {
+        this.setData({ items: [] })
+      }
     } finally {
       this.setData({ loading: false })
     }
-  },
-
-  get canEdit() {
-    return this.data.currentTab === 'my'
   },
 
   async toggleEnable(e) {
@@ -59,18 +76,24 @@ Page({
     const newStatus = !item.enabled
 
     try {
-      await wx.cloud.callFunction({
+      const res = await wx.cloud.callFunction({
         name: 'checkin-updateItem',
         data: { itemId: id, enabled: newStatus }
       })
 
-      item.enabled = newStatus
-      this.setData({ items: [...this.data.items] })
-
-      wx.showToast({
-        title: newStatus ? '已启用' : '已禁用',
-        icon: 'success'
-      })
+      if (res.result.success) {
+        wx.showToast({
+          title: newStatus ? '已启用' : '已禁用',
+          icon: 'success'
+        })
+        // 重新加载数据，确保状态正确
+        this.loadData()
+      } else {
+        wx.showToast({
+          title: res.result.message || '操作失败',
+          icon: 'error'
+        })
+      }
     } catch (e) {
       console.error('切换状态失败', e)
       wx.showToast({

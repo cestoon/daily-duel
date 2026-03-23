@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "条目管理",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "navigationBarBackgroundColor": "#3B82F6",
+  "navigationBarTextStyle": "white"
 }

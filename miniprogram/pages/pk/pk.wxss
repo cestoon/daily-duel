@@ -17,13 +17,15 @@
   height: 100rpx;
   border-radius: 50%;
   margin-right: 20rpx;
-  border: 4rpx solid #FF6B81;
+  border: 4rpx solid #FF6B35;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.2);
 }
 
 .user-right .avatar {
   margin-right: 0;
   margin-left: 20rpx;
-  border-color: #FFA07A;
+  border-color: #1E3A8A;
+  box-shadow: 0 4rpx 12rpx rgba(30, 58, 138, 0.2);
 }
 
 .text-right {
@@ -46,8 +48,12 @@
 .vs {
   font-size: 48rpx;
   font-weight: bold;
-  color: #FF6B81;
+  background: linear-gradient(135deg, #FF6B35 0%, #1E3A8A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0 20rpx;
+  text-shadow: 0 2rpx 8rpx rgba(255, 107, 53, 0.2);
 }
 
 .pk-bar-container {
@@ -78,11 +84,12 @@
 
 .health-bar-container {
   height: 80rpx;
-  background: #E0E0E0;
+  background: #F0F0F0;
   border-radius: 40rpx;
   overflow: hidden;
   display: flex;
-  margin-bottom: 16rpx;
+  position: relative;
+  box-shadow: inset 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
 .health-bar-fill {
@@ -91,17 +98,72 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.health-bar-partner {
+  background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+  box-shadow: inset 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+.health-bar-mine {
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  margin-left: -5rpx;
+  box-shadow: inset 0 2rpx 8rpx rgba(0, 0, 0, 0.2), 0 0 20rpx rgba(255, 107, 53, 0.4);
 }
 
 .health-bar-text {
   font-size: 28rpx;
   font-weight: bold;
+  color: white;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+}
+
+.pk-hint {
+  text-align: center;
+  margin-bottom: 16rpx;
+  padding: 8rpx 16rpx;
+  background: #FFF3E0;
+  border-radius: 12rpx;
+  border: 1px solid #FFE0B2;
+}
+
+.pk-hint .text-small {
+  font-size: 22rpx;
+  color: #E65100;
+}
+
+.pk-legend {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 16rpx;
+  padding: 12rpx 0;
+}
+
+.legend-item {
+  font-size: 24rpx;
+  font-weight: 500;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.legend-mine {
+  color: #FF6B35;
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+.legend-partner {
+  color: #1E3A8A;
+  background: rgba(30, 58, 138, 0.1);
+  border: 1px solid rgba(30, 58, 138, 0.3);
 }
 
 .pk-status {
   text-align: center;
   font-size: 28rpx;
   font-weight: 500;
+  margin-top: 16rpx;
 }
 
 .today-stats {
@@ -140,8 +202,9 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(135deg, #FFA07A 0%, #FFD700 100%);
+  background: linear-gradient(135deg, #FFC107 0%, #FFD54F 100%);
   transition: width 0.5s ease;
+  box-shadow: 0 2rpx 8rpx rgba(255, 193, 7, 0.3);
 }
 
 .progress-text {
@@ -151,17 +214,40 @@
   color: #999;
 }
 
-.quick-actions {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20rpx 30rpx;
-  background: white;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.1);
+.week-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 20rpx 0;
 }
 
-.quick-actions .btn {
+.stat-group {
   flex: 1;
+  text-align: center;
+  padding: 20rpx;
+  background: #F7FAFC;
+  border-radius: 16rpx;
   margin: 0 10rpx;
 }
+
+.stat-group .stat-label {
+  display: block;
+  font-size: 24rpx;
+  color: #718096;
+  margin-bottom: 16rpx;
+  font-weight: 600;
+}
+
+.stat-row {
+  margin-bottom: 12rpx;
+}
+
+.stat-row:last-child {
+  margin-bottom: 0;
+}
+
+.stat-row .stat-value {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 已移除快速操作按钮样式 */

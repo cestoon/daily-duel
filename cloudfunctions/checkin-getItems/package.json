@@ -1,5 +1,5 @@
 {
-  "name": "checkin/getItems",
+  "name": "checkin-getItems",
   "version": "1.0.0",
   "description": "获取打卡条目列表云函数",
   "main": "index.js",

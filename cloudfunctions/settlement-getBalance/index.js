@@ -10,10 +10,11 @@ function formatDate(date) {
 }
 
 exports.main = async (event) => {
-  const { userId, periodId } = event
+  let { userId, periodId } = event
+  const wxContext = cloud.getWXContext()
 
+  // 如果没有传 userId，使用当前登录用户
   if (!userId) {
-    const wxContext = cloud.getWXContext()
     const openid = wxContext.OPENID
 
     // 获取当前用户
@@ -32,30 +33,72 @@ exports.main = async (event) => {
   }
 
   try {
-    const today = new Date()
-    const dateStr = formatDate(today)
+    // 获取用户当前周期
+    let targetPeriodId = periodId
+    if (!targetPeriodId) {
+      const userResult = await db.collection(COLLECTIONS.USER).doc(userId).get()
+      if (userResult.data) {
+        targetPeriodId = userResult.data.currentPeriodId
+      }
+    }
 
-    // 获取今日所有打卡记录
+    if (!targetPeriodId) {
+      // 没有周期，返回 0
+      return {
+        success: true,
+        data: {
+          userId,
+          periodId: null,
+          totalPoints: 0,
+          recordCount: 0
+        }
+      }
+    }
+
+    // 获取该周期的所有打卡记录
     const recordsResult = await db.collection(COLLECTIONS.CHECKIN_RECORD).where({
       userId: userId,
-      date: dateStr
+      periodId: targetPeriodId
     }).get()
 
-    // 获取条目信息
-    let totalPoints = 0
-    for (const record of recordsResult.data) {
-      const itemResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).doc(record.itemId).get()
-      if (itemResult.data) {
-        totalPoints += itemResult.data.points || 1
+    // ✅ 批量获取所有 itemId
+    const completedRecords = recordsResult.data.filter(r => r.status === 'completed')
+    const itemIds = [...new Set(completedRecords.map(r => r.itemId))]
+
+    if (itemIds.length === 0) {
+      return {
+        success: true,
+        data: {
+          userId,
+          periodId: targetPeriodId,
+          totalPoints: 0,
+          recordCount: recordsResult.data.length
+        }
       }
+    }
+
+    // ✅ 一次性查询所有条目（避免N+1问题）
+    const itemsResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
+      _id: _.in(itemIds)
+    }).get()
+
+    // 构建 itemId -> points 映射
+    const itemsMap = {}
+    itemsResult.data.forEach(item => {
+      itemsMap[item._id] = item.points || 1
+    })
+
+    // 计算总积分
+    let totalPoints = 0
+    for (const record of completedRecords) {
+      totalPoints += itemsMap[record.itemId] || 1
     }
 
     return {
       success: true,
       data: {
         userId,
-        periodId: periodId || null,
-        date: dateStr,
+        periodId: targetPeriodId,
         totalPoints,
         recordCount: recordsResult.data.length
       }

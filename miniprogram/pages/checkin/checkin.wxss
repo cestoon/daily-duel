@@ -39,7 +39,7 @@
 
 .date-label {
   font-size: 24rpx;
-  color: #FF6B81;
+  color: #FF6B35;
   margin-top: 8rpx;
 }
 
@@ -58,12 +58,19 @@
   transition: all 0.3s;
 }
 
-.checkin-item.checked {
+.checkin-item.completed {
   background: #F0F9F4;
   border: 2rpx solid #4CAF50;
 }
 
-.checkin-item.unchecked {
+.checkin-item.missed {
+  background: #FFF3F3;
+  border: 2rpx solid #F44336;
+  opacity: 0.85;
+}
+
+.checkin-item.pending {
+  background: white;
   border: 2rpx solid #E0E0E0;
 }
 
@@ -87,10 +94,22 @@
   transition: all 0.3s;
 }
 
-.check-icon.checked {
+.check-icon.completed {
   background: #4CAF50;
   border-color: #4CAF50;
   color: white;
+}
+
+.check-icon.missed {
+  background: #F44336;
+  border-color: #F44336;
+  color: white;
+  font-weight: bold;
+}
+
+.check-icon.pending {
+  border-color: #E0E0E0;
+  color: #E0E0E0;
 }
 
 .item-info {
@@ -103,6 +122,11 @@
   font-weight: 500;
   color: #333;
   margin-bottom: 8rpx;
+}
+
+.item-title.missed-title {
+  color: #999;
+  text-decoration: line-through;
 }
 
 .item-meta {
@@ -129,6 +153,11 @@
 .status-tag.missed {
   background: #FFEBEE;
   color: #F44336;
+}
+
+.status-tag.no-record {
+  background: #F5F5F5;
+  color: #999;
 }
 
 .empty-hint {

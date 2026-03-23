@@ -1,0 +1,9 @@
+{
+  "name": "scripts-fixTodayPeriod",
+  "version": "1.0.0",
+  "description": "修复今日打卡记录的周期ID",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

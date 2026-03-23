@@ -12,7 +12,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FF6B81",
-    "navigationBarTitleText": "情侣打卡PK",
+    "navigationBarTitleText": "打卡PK",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {

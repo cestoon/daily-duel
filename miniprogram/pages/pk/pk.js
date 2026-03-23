@@ -8,12 +8,18 @@ Page({
     partner: null,
     myBalance: 0,
     partnerBalance: 0,
+    myMissedPoints: 0,        // 我的本周漏卡积分
+    partnerMissedPoints: 0,   // 伙伴的本周漏卡积分
+    myTodayMissedPoints: 0,   // 我的今日漏卡积分
+    partnerTodayMissedPoints: 0, // 伙伴今日漏卡积分
+    leadValue: 0,             // 领先值 = 对方今日漏卡 - 我的今日漏卡
     myPercentage: 50,
     partnerPercentage: 50,
     periodInfo: '',
     todayChecked: 0,
-    todayPending: 0,
+    todayTotalItems: 0,
     todayMissed: 0,
+    todayPending: 0,
     partnerTodayChecked: 0,
     partnerTotalItems: 0,
     partnerProgress: 0,
@@ -36,8 +42,8 @@ Page({
       await Promise.all([
         this.getUserInfo(),
         this.getPartnerInfo(),
-        this.getMyBalance(),
-        this.getPartnerBalance(),
+        this.getWeekStats(),         // 改为获取本周统计（包含已完成和漏卡）
+        this.getPartnerWeekStats(),  // 获取伙伴本周统计
         this.getTodayStats(),
         this.getPartnerTodayStats()
       ])
@@ -80,28 +86,59 @@ Page({
     }
   },
 
-  async getMyBalance() {
-    const res = await wx.cloud.callFunction({
+  async getWeekStats() {
+    // 获取本周已完成积分（不传 userId，使用当前登录用户）
+    const balanceRes = await wx.cloud.callFunction({
       name: 'settlement-getBalance'
     })
-    if (res.result.success) {
-      this.setData({ myBalance: res.result.data.totalPoints })
+    if (balanceRes.result.success) {
+      this.setData({ myBalance: balanceRes.result.data.totalPoints || 0 })
+    }
+
+    // 获取本周漏卡积分
+    const missedRes = await wx.cloud.callFunction({
+      name: 'settlement-getMissedPoints'
+    })
+    if (missedRes.result.success) {
+      this.setData({ myMissedPoints: missedRes.result.data.totalMissedPoints || 0 })
     }
   },
 
-  async getPartnerBalance() {
+  async getPartnerWeekStats() {
     if (!this.data.partner) return
 
-    const res = await wx.cloud.callFunction({
+    // 获取伙伴本周已完成积分
+    const balanceRes = await wx.cloud.callFunction({
       name: 'settlement-getBalance',
       data: { userId: this.data.partner._id }
     })
-    if (res.result.success) {
-      this.setData({ partnerBalance: res.result.data.totalPoints })
+    if (balanceRes.result.success) {
+      this.setData({ partnerBalance: balanceRes.result.data.totalPoints || 0 })
+    }
+
+    // 获取伙伴本周漏卡积分
+    const missedRes = await wx.cloud.callFunction({
+      name: 'settlement-getMissedPoints',
+      data: { userId: this.data.partner._id }
+    })
+    if (missedRes.result.success) {
+      this.setData({ partnerMissedPoints: missedRes.result.data.totalMissedPoints || 0 })
     }
   },
 
   async getTodayStats() {
+    // 先获取条目总数（只获取已启用的条目）
+    const itemsRes = await wx.cloud.callFunction({
+      name: 'checkin-getItems'
+    })
+    let totalItems = 0
+    if (itemsRes.result.success) {
+      // 只统计已启用的条目
+      totalItems = (itemsRes.result.data || []).filter(item => item.enabled).length
+      this.setData({ todayTotalItems: totalItems })
+    }
+
+    // 获取今日打卡记录
     const res = await wx.cloud.callFunction({
       name: 'checkin-getTodayRecords'
     })
@@ -109,21 +146,33 @@ Page({
       const records = res.result.data
       const checked = records.filter(r => r.status === 'completed').length
       const missed = records.filter(r => r.status === 'missed').length
+      const pending = Math.max(0, totalItems - checked - missed)
+
+      // 计算今日漏卡积分
+      let todayMissedPoints = 0
+      const missedRecords = records.filter(r => r.status === 'missed')
+      
+      // 获取条目详情来计算积分
+      if (itemsRes.result.success && missedRecords.length > 0) {
+        const items = itemsRes.result.data || []
+        const itemsMap = {}
+        items.forEach(item => {
+          itemsMap[item._id] = item
+        })
+        
+        missedRecords.forEach(record => {
+          const item = itemsMap[record.itemId]
+          if (item) {
+            todayMissedPoints += (item.points || 0)
+          }
+        })
+      }
 
       this.setData({
         todayChecked: checked,
-        todayMissed: missed
-      })
-    }
-
-    // 获取条目总数
-    const itemsRes = await wx.cloud.callFunction({
-      name: 'checkin-getItems'
-    })
-    if (itemsRes.success) {
-      const totalItems = itemsRes.data?.length || 0
-      this.setData({
-        todayPending: totalItems - this.data.todayChecked - this.data.todayMissed
+        todayMissed: missed,
+        todayPending: pending,
+        myTodayMissedPoints: todayMissedPoints
       })
     }
   },
@@ -137,7 +186,8 @@ Page({
       data: { partnerItems: true }
     })
     if (itemsRes.result.success) {
-      const totalItems = itemsRes.result.data?.length || 0
+      const items = itemsRes.result.data || []
+      const totalItems = items.length
 
       // 获取伙伴今日打卡记录
       const recordsRes = await wx.cloud.callFunction({
@@ -145,42 +195,57 @@ Page({
         data: { userId: this.data.partner._id }
       })
       if (recordsRes.result.success) {
-        const checked = recordsRes.result.data.filter(r => r.status === 'completed').length
+        const records = recordsRes.result.data
+        const checked = records.filter(r => r.status === 'completed').length
         const progress = totalItems > 0 ? Math.round(checked / totalItems * 100) : 0
+
+        // 计算伙伴今日漏卡积分
+        let todayMissedPoints = 0
+        const missedRecords = records.filter(r => r.status === 'missed')
+        
+        if (missedRecords.length > 0) {
+          const itemsMap = {}
+          items.forEach(item => {
+            itemsMap[item._id] = item
+          })
+          
+          missedRecords.forEach(record => {
+            const item = itemsMap[record.itemId]
+            if (item) {
+              todayMissedPoints += (item.points || 0)
+            }
+          })
+        }
 
         this.setData({
           partnerTotalItems: totalItems,
           partnerTodayChecked: checked,
-          partnerProgress: progress
+          partnerProgress: progress,
+          partnerTodayMissedPoints: todayMissedPoints
         })
       }
     }
   },
 
   calculatePercentages() {
-    const total = this.data.myBalance + this.data.partnerBalance
-    if (total === 0) {
-      this.setData({
-        myPercentage: 50,
-        partnerPercentage: 50
-      })
-    } else {
-      this.setData({
-        myPercentage: Math.round(this.data.myBalance / total * 100),
-        partnerPercentage: Math.round(this.data.partnerBalance / total * 100)
-      })
-    }
-  },
+    // 🎯 使用本周累计漏卡积分计算血条
+    // 计算领先值：对方本周漏卡 - 我的本周漏卡
+    const leadValue = this.data.partnerMissedPoints - this.data.myMissedPoints
+    
+    // 封顶：差值范围 [-100, +100]
+    const cappedLeadValue = Math.max(-100, Math.min(100, leadValue))
+    
+    // 计算血条百分比
+    // 领先值为正 → 我领先（对方漏卡更多）→ 我的橙色区域更大
+    // 领先值为负 → 对方领先（我漏卡更多）→ 对方蓝色区域更大
+    
+    const myPercentage = 50 + (cappedLeadValue / 2)  // 范围: [0, 100]
+    const partnerPercentage = 50 - (cappedLeadValue / 2)  // 范围: [0, 100]
 
-  goToCheckin() {
-    wx.switchTab({
-      url: '/pages/checkin/checkin'
-    })
-  },
-
-  goToSettlement() {
-    wx.navigateTo({
-      url: '/pages/settlement/settlement'
+    this.setData({
+      leadValue: cappedLeadValue,
+      myPercentage: myPercentage,
+      partnerPercentage: partnerPercentage
     })
   },
 

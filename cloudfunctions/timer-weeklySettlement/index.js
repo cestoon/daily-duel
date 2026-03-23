@@ -120,6 +120,40 @@ exports.main = async (event) => {
 
       settlementCount++
       console.log('结算记录已创建，金额:', amount)
+
+      // ✅ 创建新周期
+      const newMonday = getMondayOfWeek(now)
+      const newSunday = getSundayOfWeek(now)
+
+      const newPeriodResult = await db.collection(COLLECTIONS.PERIOD).add({
+        data: {
+          startDate: newMonday,
+          endDate: newSunday,
+          status: PERIOD_STATUS.ACTIVE,
+          createdAt: now,
+          updatedAt: now
+        }
+      })
+
+      const newPeriodId = newPeriodResult._id
+      console.log('新周期已创建:', newPeriodId)
+
+      // ✅ 更新两个用户的当前周期ID
+      await db.collection(COLLECTIONS.USER).doc(user1._id).update({
+        data: {
+          currentPeriodId: newPeriodId,
+          updatedAt: now
+        }
+      })
+
+      await db.collection(COLLECTIONS.USER).doc(user2._id).update({
+        data: {
+          currentPeriodId: newPeriodId,
+          updatedAt: now
+        }
+      })
+
+      console.log('用户周期ID已更新为新周期')
     }
 
     console.log('每周结算完成，结算数量:', settlementCount)
@@ -149,14 +183,29 @@ async function calculateBalance(userId, periodId) {
     periodId
   }).get()
 
+  // ✅ 批量获取所有 itemId
+  const completedRecords = records.data.filter(r => r.status === 'completed')
+  const itemIds = [...new Set(completedRecords.map(r => r.itemId))]
+
+  if (itemIds.length === 0) {
+    return 0
+  }
+
+  // ✅ 一次性查询所有条目（避免N+1问题）
+  const itemsResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
+    _id: _.in(itemIds)
+  }).get()
+
+  // 构建 itemId -> points 映射
+  const itemsMap = {}
+  itemsResult.data.forEach(item => {
+    itemsMap[item._id] = item.points || 1
+  })
+
+  // 计算总积分
   let totalPoints = 0
-  for (const record of records.data) {
-    if (record.status === 'completed') {
-      const item = await db.collection(COLLECTIONS.CHECKIN_ITEM).doc(record.itemId).get()
-      if (item.data) {
-        totalPoints += item.data.points || 1
-      }
-    }
+  for (const record of completedRecords) {
+    totalPoints += itemsMap[record.itemId] || 1
   }
 
   return totalPoints

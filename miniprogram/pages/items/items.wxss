@@ -18,9 +18,10 @@
 }
 
 .tab.active {
-  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
   color: white;
   font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.3);
 }
 
 .items-list {
@@ -86,12 +87,12 @@
   right: 40rpx;
   width: 120rpx;
   height: 120rpx;
-  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
   border-radius: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 20rpx rgba(255, 107, 129, 0.4);
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 53, 0.4);
   font-size: 60rpx;
   color: white;
   font-weight: bold;

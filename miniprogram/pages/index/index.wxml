@@ -3,8 +3,8 @@
   <view class="login-container" wx:if="{{!hasLogin}}">
     <view class="login-box">
       <image class="logo" src="/assets/logo.png" mode="aspectFit"></image>
-      <text class="app-name">情侣打卡PK</text>
-      <text class="app-desc">让爱与习惯一起成长</text>
+      <text class="app-name">打卡PK</text>
+      <text class="app-desc">让我们一起成长</text>
 
       <button class="btn btn-primary" bindtap="handleLogin" disabled="{{logining}}">
         {{logining ? '登录中...' : '微信登录'}}

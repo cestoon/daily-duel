@@ -9,6 +9,18 @@
         <text class="user-id">ID: {{userId}}</text>
       </view>
     </view>
+    
+    <!-- 邀请码卡片 -->
+    <view class="invite-code-section" wx:if="{{!partner}}">
+      <view class="invite-code-header">
+        <text class="invite-label">我的邀请码</text>
+        <text class="invite-hint">（分享给搭档）</text>
+      </view>
+      <view class="invite-code-box">
+        <text class="invite-code">{{user.inviteCode || '加载中...'}}</text>
+        <button class="btn-copy" bindtap="copyInviteCode">复制</button>
+      </view>
+    </view>
   </view>
 
   <!-- 伙伴信息 -->
@@ -80,12 +92,12 @@
     <view class="modal-content" catchtap="stopPropagation">
       <view class="modal-title">绑定搭档</view>
       <view class="form-item">
-        <text class="form-label">请输入搭档的用户ID</text>
-        <input class="input" placeholder="用户ID" value="{{bindCode}}" bindinput="onBindCodeInput" />
+        <text class="form-label">请输入搭档的邀请码</text>
+        <input class="input" type="number" maxlength="6" placeholder="6位数字邀请码" value="{{bindCode}}" bindinput="onBindCodeInput" />
       </view>
       <view class="form-tips">
         <text class="tips-icon">💡</text>
-        <text class="tips-text">让搭档在设置页面查看他们的用户ID</text>
+        <text class="tips-text">让搭档在设置页面查看并分享他的邀请码</text>
       </view>
       <view class="modal-actions flex-between">
         <button class="btn btn-secondary" bindtap="hideBindModal">取消</button>

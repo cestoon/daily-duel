@@ -4,7 +4,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
 }
 
 .login-box {
@@ -65,7 +81,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #FFE5E7 0%, #FFF5E6 100%);
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFE8DC 100%);
 }
 
 .welcome-box {
@@ -74,10 +90,16 @@
   padding: 80rpx 40rpx;
   background: white;
   border-radius: 30rpx;
-  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20rpx 60rpx rgba(255, 107, 53, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.login-box,
+.welcome-box {
+  position: relative;
+  z-index: 1;
 }
 
 .avatar {
@@ -85,7 +107,8 @@
   height: 200rpx;
   border-radius: 50%;
   margin-bottom: 40rpx;
-  border: 6rpx solid #FF6B81;
+  border: 6rpx solid #FF6B35;
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 53, 0.3);
 }
 
 .welcome-text {

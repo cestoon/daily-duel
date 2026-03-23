@@ -14,7 +14,8 @@
   height: 120rpx;
   border-radius: 50%;
   margin-right: 24rpx;
-  border: 4rpx solid #FF6B81;
+  border: 4rpx solid #FF6B35;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.2);
 }
 
 .user-details {
@@ -32,6 +33,65 @@
 .user-id {
   font-size: 24rpx;
   color: #999;
+}
+
+/* 邀请码区域 */
+.invite-code-section {
+  margin-top: 30rpx;
+  padding-top: 30rpx;
+  border-top: 2rpx dashed #E0E0E0;
+}
+
+.invite-code-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.invite-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.invite-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 12rpx;
+}
+
+.invite-code-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFE8DC 100%);
+  padding: 24rpx;
+  border-radius: 16rpx;
+  border: 2rpx dashed #FF6B35;
+}
+
+.invite-code {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #FF6B35;
+  letter-spacing: 8rpx;
+  font-family: 'Courier New', monospace;
+}
+
+.btn-copy {
+  padding: 16rpx 32rpx;
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  color: white;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.3);
+}
+
+.btn-copy:active {
+  opacity: 0.8;
+  transform: scale(0.98);
 }
 
 .card-header {

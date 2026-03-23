@@ -106,10 +106,22 @@ Page({
   },
 
   async bindPartner() {
-    if (!this.data.bindCode.trim()) {
+    const code = this.data.bindCode.trim()
+    
+    if (!code) {
       wx.showToast({
-        title: '请输入用户ID',
+        title: '请输入邀请码',
         icon: 'none'
+      })
+      return
+    }
+    
+    // 检查是否为6位数字
+    if (!/^\d{6}$/.test(code)) {
+      wx.showToast({
+        title: '邀请码格式错误',
+        icon: 'none',
+        duration: 2000
       })
       return
     }
@@ -117,7 +129,7 @@ Page({
     try {
       const res = await wx.cloud.callFunction({
         name: 'user-bindPartner',
-        data: { partnerCode: this.data.bindCode }
+        data: { partnerCode: code }
       })
 
       if (res.result.success) {
@@ -130,7 +142,8 @@ Page({
       } else {
         wx.showToast({
           title: res.result.message || '绑定失败',
-          icon: 'error'
+          icon: 'none',
+          duration: 2000
         })
       }
     } catch (e) {
@@ -140,6 +153,27 @@ Page({
         icon: 'error'
       })
     }
+  },
+  
+  copyInviteCode() {
+    const code = this.data.user?.inviteCode
+    if (!code) {
+      wx.showToast({
+        title: '邀请码加载中',
+        icon: 'none'
+      })
+      return
+    }
+    
+    wx.setClipboardData({
+      data: code,
+      success: () => {
+        wx.showToast({
+          title: '邀请码已复制',
+          icon: 'success'
+        })
+      }
+    })
   },
 
   async unbindPartner() {

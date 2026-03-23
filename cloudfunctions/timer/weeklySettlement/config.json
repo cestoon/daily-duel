@@ -1,9 +1,0 @@
-{
-  "triggers": [
-    {
-      "name": "weeklySettlementTrigger",
-      "type": "timer",
-      "config": "0 0 10 * * 1 *"
-    }
-  ]
-}

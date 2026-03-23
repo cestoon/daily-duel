@@ -82,10 +82,11 @@
 
 .bar-fill {
   width: 100%;
-  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
   border-radius: 20rpx;
   min-height: 4rpx;
   transition: height 0.5s ease;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.3);
 }
 
 .bar-label {
@@ -125,7 +126,7 @@
 .item-stat-value {
   font-size: 28rpx;
   font-weight: bold;
-  color: #FF6B81;
+  color: #FF6B35;
 }
 
 .progress-bar {
@@ -138,9 +139,10 @@
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
   border-radius: 6rpx;
   transition: width 0.5s ease;
+  box-shadow: 0 2rpx 8rpx rgba(255, 107, 53, 0.3);
 }
 
 .item-stat-rate {

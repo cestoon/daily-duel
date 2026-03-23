@@ -6,14 +6,14 @@
       <image class="avatar" src="{{user.avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
       <view>
         <text class="user-name">{{user.nickName}}</text>
-        <text class="user-points primary-color">积分: {{myBalance}}</text>
+        <text class="user-points primary-color">今日: {{todayChecked}}/{{todayTotalItems}}</text>
       </view>
     </view>
     <text class="vs">VS</text>
     <view class="user-right flex">
       <view class="text-right">
         <text class="user-name">{{partner.nickName || '未绑定'}}</text>
-        <text class="user-points secondary-color">积分: {{partnerBalance}}</text>
+        <text class="user-points secondary-color">今日: {{partnerTodayChecked}}/{{partnerTotalItems}}</text>
       </view>
       <image class="avatar" src="{{partner.avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
     </view>
@@ -22,23 +22,59 @@
   <!-- PK血条 -->
   <view class="pk-bar-container">
     <view class="pk-title">
-      <text>本周PK</text>
-      <text class="period-info">{{periodInfo || '进行中'}}</text>
+      <text>本周PK - 漏卡对比</text>
+      <text class="period-info">{{periodInfo || '进行中'}} (封顶±100分)</text>
+    </view>
+
+    <!-- 漏卡说明 -->
+    <view class="pk-hint">
+      <text class="text-small">📊 漏卡越少，血条越大（谁漏卡少谁领先）</text>
     </view>
 
     <view class="health-bar-container">
-      <view class="health-bar-fill" style="width: {{myPercentage}}%; background: {{myBalance >= partnerBalance ? 'linear-gradient(135deg, #FF6B81 0%, #FFA07A 100%)' : '#E0E0E0'}};">
-        <text class="health-bar-text" style="color: {{myBalance >= partnerBalance ? 'white' : '#999'}};">{{myBalance}}</text>
+      <view class="health-bar-fill health-bar-partner" style="width: {{partnerPercentage}}%;">
+        <text class="health-bar-text" wx:if="{{partnerPercentage > 20}}">TA: {{partnerMissedPoints}}分</text>
       </view>
-      <view class="health-bar-fill" style="width: {{partnerPercentage}}%; background: {{partnerBalance >= myBalance ? 'linear-gradient(135deg, #FFA07A 0%, #FFD700 100%)' : '#E0E0E0'}}; margin-left: -5rpx;">
-        <text class="health-bar-text" style="color: {{partnerBalance >= myBalance ? 'white' : '#999'}};">{{partnerBalance}}</text>
+      <view class="health-bar-fill health-bar-mine" style="width: {{myPercentage}}%;">
+        <text class="health-bar-text" wx:if="{{myPercentage > 20}}">我: {{myMissedPoints}}分</text>
       </view>
     </view>
 
+    <!-- 漏卡数值标注（放在血条下方更清晰） -->
+    <view class="pk-legend">
+      <text class="legend-item legend-mine">我的漏卡: {{myMissedPoints}}分</text>
+      <text class="legend-item legend-partner">TA的漏卡: {{partnerMissedPoints}}分</text>
+    </view>
+
     <view class="pk-status">
-      <text wx:if="{{myBalance > partnerBalance}}" class="success-color">领先 {{myBalance - partnerBalance}} 分</text>
-      <text wx:elif="{{myBalance < partnerBalance}}" class="danger-color">落后 {{partnerBalance - myBalance}} 分</text>
-      <text wx:else class="text-small">平局</text>
+      <text wx:if="{{leadValue > 0}}" class="success-color">🎉 你领先 {{leadValue}} 分（TA比你多漏{{leadValue}}分）</text>
+      <text wx:elif="{{leadValue < 0}}" class="danger-color">⚠️ 落后 {{-leadValue}} 分（你比TA多漏{{-leadValue}}分）</text>
+      <text wx:else class="text-small">🤝 平局（漏卡相同）</text>
+    </view>
+  </view>
+
+  <!-- 本周期累计数据 -->
+  <view class="card">
+    <view class="subtitle">本周累计</view>
+    <view class="week-stats flex-between">
+      <view class="stat-group">
+        <text class="stat-label">我</text>
+        <view class="stat-row">
+          <text class="stat-value success-color">已完成: {{myBalance}}分</text>
+        </view>
+        <view class="stat-row">
+          <text class="stat-value danger-color">漏卡: {{myMissedPoints}}分</text>
+        </view>
+      </view>
+      <view class="stat-group">
+        <text class="stat-label">伙伴</text>
+        <view class="stat-row">
+          <text class="stat-value success-color">已完成: {{partnerBalance}}分</text>
+        </view>
+        <view class="stat-row">
+          <text class="stat-value danger-color">漏卡: {{partnerMissedPoints}}分</text>
+        </view>
+      </view>
     </view>
   </view>
 
@@ -73,16 +109,6 @@
       </view>
       <text class="progress-text">{{partnerProgress}}%</text>
     </view>
-  </view>
-
-  <!-- 快速操作 -->
-  <view class="quick-actions flex-between">
-    <button class="btn btn-primary" bindtap="goToCheckin">
-      今日打卡
-    </button>
-    <button class="btn btn-secondary" bindtap="goToSettlement">
-      查看结算
-    </button>
   </view>
 
   <!-- 加载中 -->
