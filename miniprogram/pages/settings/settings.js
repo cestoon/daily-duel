@@ -11,7 +11,8 @@ Page({
     reminderTime: '21:00',
     showBindModal: false,
     showAboutModal: false,
-    bindCode: ''
+    bindCode: '',
+    isDev: true  // 开发模式，上线前改为 false
   },
 
   onLoad() {
@@ -250,5 +251,89 @@ Page({
         }
       }
     })
+  },
+
+  // 🧪 运行测试
+  runTests() {
+    const testCases = [
+      { id: 'daily-check-normal', name: '正常打卡无漏卡' },
+      { id: 'daily-check-missed', name: '部分打卡有漏卡' },
+      { id: 'daily-check-disabled', name: '禁用条目不算漏卡' },
+      { id: 'daily-check-duplicate', name: '已有漏卡记录不重复' },
+      { id: 'weekly-settlement-normal', name: '正常周期结算' },
+      { id: 'weekly-settlement-cap', name: '封顶机制测试' },
+      { id: 'all', name: '运行所有测试' }
+    ]
+
+    wx.showActionSheet({
+      itemList: testCases.map(t => t.name),
+      success: (res) => {
+        const testCase = testCases[res.tapIndex]
+        this.executeTest(testCase.id, testCase.name)
+      }
+    })
+  },
+
+  async executeTest(testCase, testName) {
+    wx.showLoading({ title: '测试中...' })
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'test-settlement',
+        data: { 
+          testCase,
+          userId: this.data.user?._id  // 传入当前用户ID（可选）
+        }
+      })
+
+      wx.hideLoading()
+
+      if (res.result.success) {
+        // 成功
+        if (testCase === 'all') {
+          // 显示汇总报告
+          const { summary } = res.result
+          wx.showModal({
+            title: '✅ 测试报告',
+            content: `总计: ${summary.total}\n通过: ${summary.passed}\n失败: ${summary.failed}\n通过率: ${summary.passRate}`,
+            showCancel: false,
+            confirmText: '查看详情',
+            success: (modalRes) => {
+              if (modalRes.confirm) {
+                console.log('详细结果:', res.result.results)
+                wx.showToast({
+                  title: '详情已输出到控制台',
+                  icon: 'none'
+                })
+              }
+            }
+          })
+        } else {
+          // 单个测试
+          wx.showModal({
+            title: '✅ 测试通过',
+            content: res.result.message || testName,
+            showCancel: false
+          })
+        }
+      } else {
+        // 失败
+        wx.showModal({
+          title: '❌ 测试失败',
+          content: res.result.message || '测试未通过',
+          showCancel: false
+        })
+      }
+
+      console.log('测试结果:', res.result)
+    } catch (error) {
+      wx.hideLoading()
+      console.error('测试执行失败:', error)
+      wx.showModal({
+        title: '❌ 测试执行失败',
+        content: error.message || '未知错误',
+        showCancel: false
+      })
+    }
   }
 })

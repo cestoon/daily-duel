@@ -3,7 +3,7 @@ const { db, _, cloud } = require('./common/db')
 const { COLLECTIONS } = require('./common/config')
 
 exports.main = async (event) => {
-  const { title, points, time, sort } = event
+  const { title, points, sort } = event
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
 
@@ -29,8 +29,7 @@ exports.main = async (event) => {
       data: {
         userId: user._id,
         title,
-        points: points || 1,
-        time: time || '00:00',
+        points: points || 10,
         sort: sort || 0,
         enabled: true,
         createdAt: now,

@@ -29,6 +29,14 @@ exports.main = async (event) => {
 
     const user = userResult.data[0]
 
+    // ✅ 容错：检查周期有效性
+    if (!user.currentPeriodId) {
+      return {
+        success: false,
+        message: '当前没有活跃周期，请刷新小程序重试'
+      }
+    }
+
     // 获取打卡条目
     const itemResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).doc(itemId).get()
 
@@ -74,11 +82,13 @@ exports.main = async (event) => {
       }
     }
 
-    // 创建打卡记录
+    // 创建打卡记录（保存条目快照，防止删除后丢失积分）
     await db.collection(COLLECTIONS.CHECKIN_RECORD).add({
       data: {
         userId: user._id,
         itemId: itemId,
+        itemTitle: item.title,              // ✅ 新增：条目标题快照
+        itemPoints: item.points || 10,      // ✅ 新增：条目积分快照
         periodId: user.currentPeriodId,
         date: dateStr,
         status: CHECKIN_STATUS.COMPLETED,

@@ -84,6 +84,10 @@
         <text class="setting-label">清除缓存</text>
         <text class="setting-arrow">›</text>
       </view>
+      <view class="setting-item" bindtap="runTests" wx:if="{{isDev}}">
+        <text class="setting-label">🧪 运行测试</text>
+        <text class="setting-arrow">›</text>
+      </view>
     </view>
   </view>
 

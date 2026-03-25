@@ -1,22 +1,30 @@
 // pages/stats/stats.js
 const app = getApp()
-const { getToday, formatDate } = require('../../utils/util')
 
 Page({
   data: {
-    stats: {
-      totalDays: 0,
-      totalCheckins: 0,
-      totalMissed: 0,
-      completionRate: 0
-    },
+    currentTab: 0,
+    user: null,
+    partner: null,
+    
+    // 本周数据
     weekStats: {
-      myPoints: 0,
-      partnerPoints: 0,
-      diff: 0
+      myCompleted: 0,
+      myMissed: 0,
+      myTotal: 0,
+      myRate: 0,
+      partnerCompleted: 0,
+      partnerMissed: 0,
+      partnerTotal: 0,
+      partnerRate: 0
     },
-    trend: [],
-    itemStats: [],
+    
+    // 历史周期列表
+    periods: [],
+    
+    // 打卡趋势（最近7天）
+    dailyTrend: [],
+    
     loading: true
   },
 
@@ -30,13 +38,14 @@ Page({
 
   async loadData() {
     this.setData({ loading: true })
-
+    
     try {
       await Promise.all([
-        this.loadOverallStats(),
-        this.loadWeekStats(),
-        this.loadTrend(),
-        this.loadItemStats()
+        this.getUserInfo(),
+        this.getPartnerInfo(),
+        this.getWeekStats(),
+        this.getHistoryPeriods(),
+        this.getDailyTrend()
       ])
     } catch (e) {
       console.error('加载数据失败', e)
@@ -45,90 +54,139 @@ Page({
     }
   },
 
-  async loadOverallStats() {
-    // 这里需要调用云函数获取统计数据
-    // 暂时使用模拟数据
-    this.setData({
-      stats: {
-        totalDays: 30,
-        totalCheckins: 258,
-        totalMissed: 12,
-        completionRate: 96
+  async getUserInfo() {
+    if (app.globalData.user) {
+      this.setData({ user: app.globalData.user })
+    } else {
+      const res = await wx.cloud.callFunction({
+        name: 'user-getInfo'
+      })
+      if (res.result.success) {
+        app.globalData.user = res.result.data
+        this.setData({ user: res.result.data })
       }
-    })
+    }
   },
 
-  async loadWeekStats() {
-    try {
-      const myBalanceRes = await wx.cloud.callFunction({
+  async getPartnerInfo() {
+    if (app.globalData.partner) {
+      this.setData({ partner: app.globalData.partner })
+    } else {
+      const res = await wx.cloud.callFunction({
+        name: 'user-getPartner'
+      })
+      if (res.result.success) {
+        app.globalData.partner = res.result.data
+        this.setData({ partner: res.result.data })
+      }
+    }
+  },
+
+  async getWeekStats() {
+    const user = this.data.user
+    const partner = this.data.partner
+    
+    if (!user || !partner) return
+    
+    // 获取我的统计
+    const [myCompleted, myMissed] = await Promise.all([
+      wx.cloud.callFunction({
         name: 'settlement-getBalance'
+      }),
+      wx.cloud.callFunction({
+        name: 'settlement-getMissedPoints'
       })
-
-      let partnerPoints = 0
-      if (app.globalData.partner) {
-        const partnerBalanceRes = await wx.cloud.callFunction({
-          name: 'settlement-getBalance',
-          data: { userId: app.globalData.partner._id }
-        })
-        if (partnerBalanceRes.result.success) {
-          partnerPoints = partnerBalanceRes.result.data.totalPoints
-        }
+    ])
+    
+    // 获取伙伴统计
+    const [partnerCompleted, partnerMissed] = await Promise.all([
+      wx.cloud.callFunction({
+        name: 'settlement-getBalance',
+        data: { userId: partner._id }
+      }),
+      wx.cloud.callFunction({
+        name: 'settlement-getMissedPoints',
+        data: { userId: partner._id }
+      })
+    ])
+    
+    const myCompletedPoints = myCompleted.result.data?.totalPoints || 0
+    const myMissedPoints = myMissed.result.data?.totalMissedPoints || 0
+    const myTotal = myCompletedPoints + myMissedPoints
+    const myRate = myTotal > 0 ? Math.round((myCompletedPoints / myTotal) * 100) : 0
+    
+    const partnerCompletedPoints = partnerCompleted.result.data?.totalPoints || 0
+    const partnerMissedPoints = partnerMissed.result.data?.totalMissedPoints || 0
+    const partnerTotal = partnerCompletedPoints + partnerMissedPoints
+    const partnerRate = partnerTotal > 0 ? Math.round((partnerCompletedPoints / partnerTotal) * 100) : 0
+    
+    this.setData({
+      weekStats: {
+        myCompleted: myCompletedPoints,
+        myMissed: myMissedPoints,
+        myTotal: myTotal,
+        myRate: myRate,
+        partnerCompleted: partnerCompletedPoints,
+        partnerMissed: partnerMissedPoints,
+        partnerTotal: partnerTotal,
+        partnerRate: partnerRate
       }
-
-      const myPoints = myBalanceRes.result?.success ? myBalanceRes.result.data.totalPoints : 0
-
-      this.setData({
-        weekStats: {
-          myPoints,
-          partnerPoints,
-          diff: myPoints - partnerPoints
-        }
-      })
-    } catch (e) {
-      console.error('加载周统计失败', e)
-    }
-  },
-
-  async loadTrend() {
-    // 模拟最近7天的打卡趋势
-    const today = new Date()
-    const trend = []
-    const days = ['日', '一', '二', '三', '四', '五', '六']
-
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today)
-      date.setDate(date.getDate() - i)
-      trend.push({
-        date: formatDate(date),
-        day: days[date.getDay()],
-        count: Math.floor(Math.random() * 5) + 1,
-        percentage: Math.floor(Math.random() * 100)
-      })
-    }
-
-    this.setData({ trend })
-  },
-
-  async loadItemStats() {
-    // 获取用户的条目列表
-    const itemsRes = await wx.cloud.callFunction({
-      name: 'checkin-getItems'
     })
+  },
 
-    if (itemsRes.result.success) {
-      const items = itemsRes.result.data
-      const itemStats = items.map(item => ({
-        title: item.title,
-        completed: Math.floor(Math.random() * 20) + 5,
-        total: Math.floor(Math.random() * 5) + 20
-      }))
-
-      itemStats.forEach(item => {
-        item.percentage = Math.round(item.completed / item.total * 100)
+  async getHistoryPeriods() {
+    try {
+      // 调用云函数获取历史周期
+      const res = await wx.cloud.callFunction({
+        name: 'stats-getHistory',
+        data: { limit: 10 }
       })
-
-      this.setData({ itemStats })
+      
+      if (res.result.success) {
+        this.setData({
+          periods: res.result.data || []
+        })
+      }
+    } catch (e) {
+      console.error('获取历史记录失败', e)
+      this.setData({ periods: [] })
     }
+  },
+
+  async getDailyTrend() {
+    try {
+      // 获取最近7天的打卡趋势
+      const res = await wx.cloud.callFunction({
+        name: 'stats-getDailyTrend',
+        data: { days: 7 }
+      })
+      
+      if (res.result.success) {
+        this.setData({
+          dailyTrend: res.result.data || []
+        })
+      }
+    } catch (e) {
+      console.error('获取每日趋势失败', e)
+      this.setData({ dailyTrend: [] })
+    }
+  },
+
+  onTabChange(e) {
+    this.setData({
+      currentTab: e.detail.index
+    })
+  },
+
+  formatDate(dateStr) {
+    const d = new Date(dateStr)
+    return `${d.getMonth() + 1}.${d.getDate()}`
+  },
+
+  formatPeriod(start, end) {
+    const s = new Date(start)
+    const e = new Date(end)
+    return `${s.getMonth() + 1}.${s.getDate()} - ${e.getMonth() + 1}.${e.getDate()}`
   },
 
   onPullDownRefresh() {

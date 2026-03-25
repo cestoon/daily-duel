@@ -13,7 +13,8 @@ module.exports = {
   // 周期状态
   PERIOD_STATUS: {
     ACTIVE: 'active',
-    ENDED: 'ended'
+    COMPLETED: 'completed',
+    CANCELLED: 'cancelled',
   },
 
   // 打卡状态

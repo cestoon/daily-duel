@@ -1,9 +1,0 @@
-{
-  "name": "scripts-forceNewPeriod",
-  "version": "1.0.0",
-  "description": "强制创建新周期并更新用户",
-  "main": "index.js",
-  "dependencies": {
-    "wx-server-sdk": "~2.6.3"
-  }
-}

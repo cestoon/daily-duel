@@ -18,11 +18,8 @@ Page({
     periodInfo: '',
     todayChecked: 0,
     todayTotalItems: 0,
-    todayMissed: 0,
-    todayPending: 0,
     partnerTodayChecked: 0,
     partnerTotalItems: 0,
-    partnerProgress: 0,
     loading: true
   },
 
@@ -145,33 +142,41 @@ Page({
     if (res.result.success) {
       const records = res.result.data
       const checked = records.filter(r => r.status === 'completed').length
-      const missed = records.filter(r => r.status === 'missed').length
-      const pending = Math.max(0, totalItems - checked - missed)
 
-      // 计算今日漏卡积分
+      // ✅ 计算今日漏卡积分（优先使用快照）
       let todayMissedPoints = 0
       const missedRecords = records.filter(r => r.status === 'missed')
       
-      // 获取条目详情来计算积分
-      if (itemsRes.result.success && missedRecords.length > 0) {
-        const items = itemsRes.result.data || []
-        const itemsMap = {}
-        items.forEach(item => {
-          itemsMap[item._id] = item
-        })
+      if (missedRecords.length > 0) {
+        // 优先使用记录中的快照积分
+        const hasSnapshot = missedRecords.some(r => r.itemPoints !== undefined)
         
-        missedRecords.forEach(record => {
-          const item = itemsMap[record.itemId]
-          if (item) {
-            todayMissedPoints += (item.points || 0)
+        if (hasSnapshot) {
+          // 有快照，直接使用
+          missedRecords.forEach(record => {
+            todayMissedPoints += (record.itemPoints || 10)
+          })
+        } else {
+          // 没有快照（旧数据），查询条目
+          if (itemsRes.result.success) {
+            const items = itemsRes.result.data || []
+            const itemsMap = {}
+            items.forEach(item => {
+              itemsMap[item._id] = item
+            })
+            
+            missedRecords.forEach(record => {
+              const item = itemsMap[record.itemId]
+              if (item) {
+                todayMissedPoints += (item.points || 10)
+              }
+            })
           }
-        })
+        }
       }
 
       this.setData({
         todayChecked: checked,
-        todayMissed: missed,
-        todayPending: pending,
         myTodayMissedPoints: todayMissedPoints
       })
     }
@@ -197,30 +202,39 @@ Page({
       if (recordsRes.result.success) {
         const records = recordsRes.result.data
         const checked = records.filter(r => r.status === 'completed').length
-        const progress = totalItems > 0 ? Math.round(checked / totalItems * 100) : 0
 
-        // 计算伙伴今日漏卡积分
+        // ✅ 计算伙伴今日漏卡积分（优先使用快照）
         let todayMissedPoints = 0
         const missedRecords = records.filter(r => r.status === 'missed')
         
         if (missedRecords.length > 0) {
-          const itemsMap = {}
-          items.forEach(item => {
-            itemsMap[item._id] = item
-          })
+          // 优先使用记录中的快照积分
+          const hasSnapshot = missedRecords.some(r => r.itemPoints !== undefined)
           
-          missedRecords.forEach(record => {
-            const item = itemsMap[record.itemId]
-            if (item) {
-              todayMissedPoints += (item.points || 0)
-            }
-          })
+          if (hasSnapshot) {
+            // 有快照，直接使用
+            missedRecords.forEach(record => {
+              todayMissedPoints += (record.itemPoints || 10)
+            })
+          } else {
+            // 没有快照（旧数据），查询条目
+            const itemsMap = {}
+            items.forEach(item => {
+              itemsMap[item._id] = item
+            })
+            
+            missedRecords.forEach(record => {
+              const item = itemsMap[record.itemId]
+              if (item) {
+                todayMissedPoints += (item.points || 10)
+              }
+            })
+          }
         }
 
         this.setData({
           partnerTotalItems: totalItems,
           partnerTodayChecked: checked,
-          partnerProgress: progress,
           partnerTodayMissedPoints: todayMissedPoints
         })
       }

@@ -10,8 +10,8 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FF6B35",
-    "navigationBarTitleText": "情侣打卡PK",
+    "navigationBarBackgroundColor": "#1E3A8A",
+    "navigationBarTitleText": "Daily Duel",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
@@ -22,19 +22,19 @@
     "list": [
       {
         "pagePath": "pages/pk/pk",
-        "text": "PK对战",
+        "text": "PK",
         "iconPath": "assets/icons/pk.png",
         "selectedIconPath": "assets/icons/pk-active.png"
       },
       {
         "pagePath": "pages/checkin/checkin",
-        "text": "今日打卡",
+        "text": "打卡",
         "iconPath": "assets/icons/checkin.png",
         "selectedIconPath": "assets/icons/checkin-active.png"
       },
       {
         "pagePath": "pages/items/items",
-        "text": "条目管理",
+        "text": "条目",
         "iconPath": "assets/icons/items.png",
         "selectedIconPath": "assets/icons/items-active.png"
       },

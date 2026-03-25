@@ -61,11 +61,9 @@ exports.main = async (event) => {
       periodId: targetPeriodId
     }).get()
 
-    // ✅ 批量获取所有 itemId
     const completedRecords = recordsResult.data.filter(r => r.status === 'completed')
-    const itemIds = [...new Set(completedRecords.map(r => r.itemId))]
 
-    if (itemIds.length === 0) {
+    if (completedRecords.length === 0) {
       return {
         success: true,
         data: {
@@ -77,21 +75,37 @@ exports.main = async (event) => {
       }
     }
 
-    // ✅ 一次性查询所有条目（避免N+1问题）
-    const itemsResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
-      _id: _.in(itemIds)
-    }).get()
-
-    // 构建 itemId -> points 映射
-    const itemsMap = {}
-    itemsResult.data.forEach(item => {
-      itemsMap[item._id] = item.points || 1
-    })
-
-    // 计算总积分
+    // ✅ 优先使用记录中的快照积分（防止条目删除后丢失积分）
     let totalPoints = 0
+    const missingItemIds = []
+
     for (const record of completedRecords) {
-      totalPoints += itemsMap[record.itemId] || 1
+      if (record.itemPoints !== undefined) {
+        // 有快照积分，直接使用
+        totalPoints += record.itemPoints
+      } else {
+        // 没有快照积分（旧数据），需要查询条目
+        missingItemIds.push(record.itemId)
+      }
+    }
+
+    // 如果有旧数据没有快照，批量查询条目
+    if (missingItemIds.length > 0) {
+      const itemsResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
+        _id: _.in(missingItemIds)
+      }).get()
+
+      const itemsMap = {}
+      itemsResult.data.forEach(item => {
+        itemsMap[item._id] = item.points || 10
+      })
+
+      // 补充旧数据的积分
+      for (const record of completedRecords) {
+        if (record.itemPoints === undefined) {
+          totalPoints += itemsMap[record.itemId] || 10
+        }
+      }
     }
 
     return {

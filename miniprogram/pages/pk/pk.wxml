@@ -78,39 +78,6 @@
     </view>
   </view>
 
-  <!-- 今日打卡统计 -->
-  <view class="card">
-    <view class="subtitle">今日打卡</view>
-    <view class="today-stats flex-between">
-      <view class="stat-item">
-        <text class="stat-value success-color">{{todayChecked}}</text>
-        <text class="stat-label">已完成</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-value warning-color">{{todayPending}}</text>
-        <text class="stat-label">待完成</text>
-      </view>
-      <view class="stat-item">
-        <text class="stat-value danger-color">{{todayMissed}}</text>
-        <text class="stat-label">漏卡</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 伙伴今日打卡 -->
-  <view class="card" wx:if="{{partner.nickName}}">
-    <view class="subtitle flex-between">
-      <text>{{partner.nickName}} 今日打卡</text>
-      <text class="text-small">{{partnerTodayChecked}}/{{partnerTotalItems}}</text>
-    </view>
-    <view class="partner-progress">
-      <view class="progress-bar">
-        <view class="progress-fill" style="width: {{partnerProgress}}%;"></view>
-      </view>
-      <text class="progress-text">{{partnerProgress}}%</text>
-    </view>
-  </view>
-
   <!-- 加载中 -->
   <view class="loading" wx:if="{{loading}}">
     <text>加载中...</text>

@@ -68,24 +68,37 @@ exports.main = async (event) => {
       }
     }
 
-    // ✅ 批量获取所有 itemId
-    const itemIds = [...new Set(recordsResult.data.map(r => r.itemId))]
-
-    // ✅ 一次性查询所有条目（避免N+1问题）
-    const itemsResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
-      _id: _.in(itemIds)
-    }).get()
-
-    // 构建 itemId -> points 映射
-    const itemsMap = {}
-    itemsResult.data.forEach(item => {
-      itemsMap[item._id] = item.points || 1
-    })
-
-    // 计算漏卡总积分
+    // ✅ 优先使用记录中的快照积分（防止条目删除后丢失积分）
     let totalMissedPoints = 0
+    const missingItemIds = []
+
     for (const record of recordsResult.data) {
-      totalMissedPoints += itemsMap[record.itemId] || 1
+      if (record.itemPoints !== undefined) {
+        // 有快照积分，直接使用
+        totalMissedPoints += record.itemPoints
+      } else {
+        // 没有快照积分（旧数据），需要查询条目
+        missingItemIds.push(record.itemId)
+      }
+    }
+
+    // 如果有旧数据没有快照，批量查询条目
+    if (missingItemIds.length > 0) {
+      const itemsResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
+        _id: _.in(missingItemIds)
+      }).get()
+
+      const itemsMap = {}
+      itemsResult.data.forEach(item => {
+        itemsMap[item._id] = item.points || 10
+      })
+
+      // 补充旧数据的积分
+      for (const record of recordsResult.data) {
+        if (record.itemPoints === undefined) {
+          totalMissedPoints += itemsMap[record.itemId] || 10
+        }
+      }
     }
 
     return {

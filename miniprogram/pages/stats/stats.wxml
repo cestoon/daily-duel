@@ -1,81 +1,170 @@
 <!-- pages/stats/stats.wxml -->
 <view class="container">
-  <!-- 数据概览 -->
-  <view class="stats-overview">
-    <view class="stat-card">
-      <text class="stat-value primary-color">{{stats.totalDays}}</text>
-      <text class="stat-label">总天数</text>
-    </view>
-    <view class="stat-card">
-      <text class="stat-value success-color">{{stats.totalCheckins}}</text>
-      <text class="stat-label">总打卡</text>
-    </view>
-    <view class="stat-card">
-      <text class="stat-value warning-color">{{stats.totalMissed}}</text>
-      <text class="stat-label">漏卡</text>
-    </view>
-    <view class="stat-card">
-      <text class="stat-value">{{stats.completionRate}}%</text>
-      <text class="stat-label">完成率</text>
-    </view>
-  </view>
-
-  <!-- 本周统计 -->
-  <view class="card">
-    <view class="subtitle">本周统计</view>
-    <view class="week-stats flex-between">
-      <view class="week-item">
-        <text class="week-label">我的积分</text>
-        <text class="week-value primary-color">{{weekStats.myPoints}}</text>
-      </view>
-      <view class="week-item">
-        <text class="week-label">对方积分</text>
-        <text class="week-value secondary-color">{{weekStats.partnerPoints}}</text>
-      </view>
-      <view class="week-item">
-        <text class="week-label">差距</text>
-        <text class="week-value {{weekStats.diff >= 0 ? 'success-color' : 'danger-color'}}">
-          {{weekStats.diff >= 0 ? '+' : ''}}{{weekStats.diff}}
-        </text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 打卡趋势 -->
-  <view class="card">
-    <view class="subtitle">打卡趋势（最近7天）</view>
-    <view class="trend-chart">
-      <view class="chart-bars flex">
-        <view wx:for="{{trend}}" wx:key="date" class="bar-item">
-          <view class="bar-wrapper">
-            <view class="bar-fill" style="height: {{item.percentage}}%;"></view>
-          </view>
-          <text class="bar-label">{{item.day}}</text>
-          <text class="bar-value">{{item.count}}</text>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 条目统计 -->
-  <view class="card">
-    <view class="subtitle">条目完成度</view>
-    <view class="item-stats">
-      <view wx:for="{{itemStats}}" wx:key="title" class="item-stat-item">
-        <view class="item-stat-header flex-between">
-          <text class="item-stat-title">{{item.title}}</text>
-          <text class="item-stat-value">{{item.completed}}/{{item.total}}</text>
-        </view>
-        <view class="progress-bar">
-          <view class="progress-fill" style="width: {{item.percentage}}%;"></view>
-        </view>
-        <text class="item-stat-rate">{{item.percentage}}%</text>
-      </view>
-    </view>
-  </view>
-
   <!-- 加载中 -->
   <view class="loading" wx:if="{{loading}}">
     <text>加载中...</text>
+  </view>
+
+  <view wx:else>
+    <!-- Tab 切换 -->
+    <view class="tabs">
+      <view 
+        class="tab-item {{currentTab === 0 ? 'active' : ''}}"
+        bindtap="onTabChange"
+        data-index="0"
+      >
+        本周统计
+      </view>
+      <view 
+        class="tab-item {{currentTab === 1 ? 'active' : ''}}"
+        bindtap="onTabChange"
+        data-index="1"
+      >
+        历史记录
+      </view>
+    </view>
+
+    <!-- 本周统计 -->
+    <view class="tab-content" wx:if="{{currentTab === 0}}">
+      <!-- 完成率对比 -->
+      <view class="stats-card">
+        <view class="card-title">完成率对比</view>
+        <view class="rate-compare">
+          <view class="rate-item mine">
+            <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"></image>
+            <view class="rate-info">
+              <text class="name">{{user.nickName}}</text>
+              <view class="rate-bar">
+                <view class="bar-bg">
+                  <view class="bar-fill mine" style="width: {{weekStats.myRate}}%"></view>
+                </view>
+                <text class="rate-text">{{weekStats.myRate}}%</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="rate-item partner" wx:if="{{partner}}">
+            <image class="avatar" src="{{partner.avatarUrl}}" mode="aspectFill"></image>
+            <view class="rate-info">
+              <text class="name">{{partner.nickName}}</text>
+              <view class="rate-bar">
+                <view class="bar-bg">
+                  <view class="bar-fill partner" style="width: {{weekStats.partnerRate}}%"></view>
+                </view>
+                <text class="rate-text">{{weekStats.partnerRate}}%</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 详细数据 -->
+      <view class="stats-card">
+        <view class="card-title">详细数据</view>
+        <view class="detail-stats">
+          <view class="stats-row">
+            <view class="stats-label">我的数据</view>
+            <view class="stats-values">
+              <view class="stat-item">
+                <text class="stat-value success">{{weekStats.myCompleted}}</text>
+                <text class="stat-label">已完成</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value error">{{weekStats.myMissed}}</text>
+                <text class="stat-label">已漏卡</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{weekStats.myTotal}}</text>
+                <text class="stat-label">总计</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="stats-row" wx:if="{{partner}}">
+            <view class="stats-label">对方数据</view>
+            <view class="stats-values">
+              <view class="stat-item">
+                <text class="stat-value success">{{weekStats.partnerCompleted}}</text>
+                <text class="stat-label">已完成</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value error">{{weekStats.partnerMissed}}</text>
+                <text class="stat-label">已漏卡</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{weekStats.partnerTotal}}</text>
+                <text class="stat-label">总计</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 打卡趋势 -->
+      <view class="stats-card">
+        <view class="card-title">最近7天趋势</view>
+        <view class="trend-chart">
+          <view class="chart-placeholder">
+            <text class="placeholder-icon">📊</text>
+            <text class="placeholder-text">趋势图表开发中...</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 历史记录 -->
+    <view class="tab-content" wx:if="{{currentTab === 1}}">
+      <view class="history-list">
+        <view wx:for="{{periods}}" wx:key="_id" class="period-card">
+          <view class="period-header">
+            <text class="period-date">{{formatPeriod(item.startDate, item.endDate)}}</text>
+            <text class="period-status {{item.status}}">
+              {{item.status === 'completed' ? '已结束' : '进行中'}}
+            </text>
+          </view>
+
+          <view class="period-stats">
+            <view class="period-user mine">
+              <image class="small-avatar" src="{{user.avatarUrl}}" mode="aspectFill"></image>
+              <view class="period-data">
+                <text class="data-value success">{{item.myCompleted || 0}}</text>
+                <text class="data-label">已完成</text>
+              </view>
+              <view class="period-data">
+                <text class="data-value error">{{item.myMissed || 0}}</text>
+                <text class="data-label">漏卡</text>
+              </view>
+            </view>
+
+            <view class="vs-divider">VS</view>
+
+            <view class="period-user partner" wx:if="{{partner}}">
+              <image class="small-avatar" src="{{partner.avatarUrl}}" mode="aspectFill"></image>
+              <view class="period-data">
+                <text class="data-value success">{{item.partnerCompleted || 0}}</text>
+                <text class="data-label">已完成</text>
+              </view>
+              <view class="period-data">
+                <text class="data-value error">{{item.partnerMissed || 0}}</text>
+                <text class="data-label">漏卡</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="period-result" wx:if="{{item.settlement}}">
+            <text class="result-text">
+              {{item.settlement.winner === 'me' ? '🎉 你赢了' : '😢 你输了'}}
+              {{item.settlement.amount}}分
+            </text>
+          </view>
+        </view>
+
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{periods.length === 0}}">
+          <text class="empty-icon">📝</text>
+          <text class="empty-text">还没有历史记录</text>
+        </view>
+      </view>
+    </view>
   </view>
 </view>

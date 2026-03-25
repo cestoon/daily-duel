@@ -28,3 +28,9 @@ logs/
 # 临时文件
 *.tmp
 *.temp
+.session_tmps/
+output/
+tests/
+
+# 清理脚本（一次性使用）
+cleanup.sh

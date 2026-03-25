@@ -70,25 +70,34 @@ exports.main = async (event) => {
       const user1 = users.data[0]
       const user2 = users.data[1]
 
-      // 计算两个用户的总积分
-      const balance1 = await calculateBalance(user1._id, period._id)
-      const balance2 = await calculateBalance(user2._id, period._id)
+      // 🎯 计算两个用户的漏卡积分（漏卡越多，赔得越多）
+      const missed1 = await calculateMissedPoints(user1._id, period._id)
+      const missed2 = await calculateMissedPoints(user2._id, period._id)
 
-      console.log(`用户 ${user1.nickName} 积分: ${balance1}`)
-      console.log(`用户 ${user2.nickName} 积分: ${balance2}`)
+      console.log(`用户 ${user1.nickName} 漏卡积分: ${missed1}`)
+      console.log(`用户 ${user2.nickName} 漏卡积分: ${missed2}`)
 
-      // 确定付款方和收款方
+      // 确定付款方和收款方（漏卡多的人付钱给漏卡少的人）
       let payerId, payeeId, amount
-      if (balance1 > balance2) {
-        payerId = user2._id
-        payeeId = user1._id
-        amount = balance1 - balance2
-      } else if (balance2 > balance1) {
+      if (missed1 > missed2) {
+        // user1 漏卡更多，user1 付钱给 user2
         payerId = user1._id
         payeeId = user2._id
-        amount = balance2 - balance1
+        amount = missed1 - missed2
+      } else if (missed2 > missed1) {
+        // user2 漏卡更多，user2 付钱给 user1
+        payerId = user2._id
+        payeeId = user1._id
+        amount = missed2 - missed1
       } else {
-        console.log('积分相同，无需结算')
+        console.log('漏卡积分相同，无需结算')
+        // 仍然标记周期结束
+        await db.collection(COLLECTIONS.PERIOD).doc(period._id).update({
+          data: {
+            status: PERIOD_STATUS.COMPLETED,
+            updatedAt: now
+          }
+        })
         continue
       }
 
@@ -110,10 +119,10 @@ exports.main = async (event) => {
         }
       })
 
-      // 更新周期状态
+      // 更新周期状态为已完成
       await db.collection(COLLECTIONS.PERIOD).doc(period._id).update({
         data: {
-          status: PERIOD_STATUS.ENDED,
+          status: PERIOD_STATUS.COMPLETED,
           updatedAt: now
         }
       })
@@ -174,24 +183,25 @@ exports.main = async (event) => {
   }
 }
 
-async function calculateBalance(userId, periodId) {
+// 计算用户在该周期的漏卡积分
+async function calculateMissedPoints(userId, periodId) {
   const { COLLECTIONS } = require('./common/config')
 
-  // 获取该用户在该周期的所有打卡记录
+  // 获取该用户在该周期的所有漏卡记录
   const records = await db.collection(COLLECTIONS.CHECKIN_RECORD).where({
     userId,
-    periodId
+    periodId,
+    status: 'missed'
   }).get()
 
-  // ✅ 批量获取所有 itemId
-  const completedRecords = records.data.filter(r => r.status === 'completed')
-  const itemIds = [...new Set(completedRecords.map(r => r.itemId))]
-
-  if (itemIds.length === 0) {
+  if (records.data.length === 0) {
     return 0
   }
 
-  // ✅ 一次性查询所有条目（避免N+1问题）
+  // 批量获取所有 itemId
+  const itemIds = [...new Set(records.data.map(r => r.itemId))]
+
+  // 一次性查询所有条目
   const itemsResult = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
     _id: _.in(itemIds)
   }).get()
@@ -202,11 +212,11 @@ async function calculateBalance(userId, periodId) {
     itemsMap[item._id] = item.points || 1
   })
 
-  // 计算总积分
-  let totalPoints = 0
-  for (const record of completedRecords) {
-    totalPoints += itemsMap[record.itemId] || 1
+  // 计算总漏卡积分
+  let totalMissedPoints = 0
+  for (const record of records.data) {
+    totalMissedPoints += itemsMap[record.itemId] || 1
   }
 
-  return totalPoints
+  return totalMissedPoints
 }

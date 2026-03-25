@@ -10,8 +10,7 @@ Page({
     canEdit: true,
     newItem: {
       title: '',
-      points: 1,
-      time: '00:00'
+      points: 10
     }
   },
 
@@ -110,8 +109,7 @@ Page({
       editId: null,
       newItem: {
         title: '',
-        points: 1,
-        time: '00:00'
+        points: 10
       }
     })
   },
@@ -126,8 +124,7 @@ Page({
       editId: id,
       newItem: {
         title: item.title,
-        points: item.points,
-        time: item.time
+        points: item.points
       }
     })
   },
@@ -148,18 +145,12 @@ Page({
 
   onPointsInput(e) {
     this.setData({
-      'newItem.points': parseInt(e.detail.value) || 1
-    })
-  },
-
-  onTimeChange(e) {
-    this.setData({
-      'newItem.time': e.detail.value
+      'newItem.points': parseInt(e.detail.value) || 10
     })
   },
 
   async saveItem() {
-    const { title, points, time } = this.data.newItem
+    const { title, points } = this.data.newItem
 
     if (!title.trim()) {
       wx.showToast({
@@ -176,14 +167,13 @@ Page({
           data: {
             itemId: this.data.editId,
             title,
-            points,
-            time
+            points
           }
         })
       } else {
         await wx.cloud.callFunction({
           name: 'checkin-addItem',
-          data: { title, points, time }
+          data: { title, points }
         })
       }
 

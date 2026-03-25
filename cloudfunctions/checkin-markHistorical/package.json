@@ -1,7 +1,7 @@
 {
-  "name": "init-db",
+  "name": "checkin-markHistorical",
   "version": "1.0.0",
-  "description": "数据库初始化云函数",
+  "description": "标记历史打卡记录",
   "main": "index.js",
   "dependencies": {
     "wx-server-sdk": "~2.6.3"

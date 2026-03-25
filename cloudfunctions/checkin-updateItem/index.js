@@ -3,7 +3,7 @@ const { db, _, cloud } = require('./common/db')
 const { COLLECTIONS } = require('./common/config')
 
 exports.main = async (event) => {
-  const { itemId, title, points, time, enabled } = event
+  const { itemId, title, points, enabled } = event
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
 
@@ -49,7 +49,6 @@ exports.main = async (event) => {
 
     if (title !== undefined) updateData.title = title
     if (points !== undefined) updateData.points = points
-    if (time !== undefined) updateData.time = time
     if (enabled !== undefined) updateData.enabled = enabled
 
     // 更新条目

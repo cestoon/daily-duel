@@ -25,9 +25,8 @@
           />
         </view>
       </view>
-      <view class="item-meta flex-between">
+      <view class="item-meta">
         <text class="meta-item">分数: {{item.points}}</text>
-        <text class="meta-item">时间: {{item.time}}</text>
       </view>
       <view class="item-actions" wx:if="{{canEdit}}">
         <button class="btn-mini btn-edit" bindtap="editItem" data-id="{{item._id}}">编辑</button>
@@ -63,13 +62,7 @@
     </view>
     <view class="form-item">
       <text class="form-label">分数</text>
-      <input class="input" type="number" placeholder="1" value="{{newItem.points}}" bindinput="onPointsInput" />
-    </view>
-    <view class="form-item">
-      <text class="form-label">打卡时间</text>
-      <picker mode="time" value="{{newItem.time}}" bindchange="onTimeChange">
-        <view class="picker-value">{{newItem.time}}</view>
-      </picker>
+      <input class="input" type="number" placeholder="10" value="{{newItem.points}}" bindinput="onPointsInput" />
     </view>
     <view class="modal-actions flex-between">
       <button class="btn btn-secondary" bindtap="hideModal">取消</button>

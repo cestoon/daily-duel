@@ -44,24 +44,27 @@
           </view>
         </view>
 
-        <view class="settlement-actions flex-between" wx:if="{{item.status === 'pending'}}">
+        <view class="settlement-actions" wx:if="{{item.status === 'pending'}}">
+          <!-- 我是付款方 -->
           <button
+            wx:if="{{item.payerId === userId}}"
             class="btn btn-primary {{item.payerConfirmed ? 'disabled' : ''}}"
             bindtap="confirmPayment"
             data-id="{{item._id}}"
-            data-role="payer"
             disabled="{{item.payerConfirmed}}"
           >
-            {{item.payerId === userId ? '确认已付' : ''}}
+            {{item.payerConfirmed ? '已确认付款' : '确认已付款'}}
           </button>
+          
+          <!-- 我是收款方 -->
           <button
+            wx:if="{{item.payeeId === userId}}"
             class="btn btn-primary {{item.payeeConfirmed ? 'disabled' : ''}}"
             bindtap="confirmPayment"
             data-id="{{item._id}}"
-            data-role="payee"
             disabled="{{item.payeeConfirmed}}"
           >
-            {{item.payeeId === userId ? '确认已收' : ''}}
+            {{item.payeeConfirmed ? '已确认收款' : '确认已收款'}}
           </button>
         </view>
 

@@ -28,17 +28,27 @@ function getSundayOfWeek(date) {
 
 exports.main = async (event) => {
   const now = new Date()
-  const yesterday = new Date(now)
-  yesterday.setDate(yesterday.getDate() - 1)
-  const yesterdayStr = formatDate(yesterday)
+  const todayStr = formatDate(now)
 
   try {
-    console.log('开始每日打卡检查:', yesterdayStr)
+    console.log('开始每日打卡检查（23:59）:', todayStr)
 
     // 获取所有活跃周期的用户
     const activePeriods = await db.collection(COLLECTIONS.PERIOD).where({
       status: PERIOD_STATUS.ACTIVE
     }).get()
+
+    if (activePeriods.data.length === 0) {
+      console.log('没有活跃周期，跳过检查')
+      return {
+        success: true,
+        data: {
+          checkedDate: todayStr,
+          checkedUserCount: 0,
+          missedCount: 0
+        }
+      }
+    }
 
     const periodIds = activePeriods.data.map(p => p._id)
 
@@ -48,8 +58,9 @@ exports.main = async (event) => {
     }).get()
 
     let missedCount = 0
+    let checkedItemCount = 0
 
-    // 检查每个用户昨天的打卡情况
+    // 检查每个用户今天的打卡情况
     for (const user of users.data) {
       // 获取用户的所有启用的打卡条目
       const items = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
@@ -58,41 +69,57 @@ exports.main = async (event) => {
       }).get()
 
       for (const item of items.data) {
-        // 检查昨天是否已打卡
+        checkedItemCount++
+        
+        // 检查今天是否已有记录
         const existingRecord = await db.collection(COLLECTIONS.CHECKIN_RECORD).where({
           userId: user._id,
           itemId: item._id,
-          date: yesterdayStr
+          date: todayStr
         }).get()
 
         if (existingRecord.data.length === 0) {
-          // 未打卡，创建漏卡记录
+          // 今天没有任何记录，创建漏卡记录（保存条目快照）
           await db.collection(COLLECTIONS.CHECKIN_RECORD).add({
             data: {
               userId: user._id,
               itemId: item._id,
+              itemTitle: item.title,              // ✅ 新增：条目标题快照
+              itemPoints: item.points || 10,      // ✅ 新增：条目积分快照
               periodId: user.currentPeriodId,
-              date: yesterdayStr,
+              date: todayStr,
               status: CHECKIN_STATUS.MISSED,
               checkinTime: null,
-              note: '',
+              note: '自动标记漏卡',
               createdAt: now,
               updatedAt: now
             }
           })
           missedCount++
-          console.log(`用户 ${user.nickName} 条目 ${item.title} 漏卡`)
+          console.log(`用户 ${user.nickName} 条目 ${item.title} 未打卡，自动标记漏卡`)
+        } else {
+          const record = existingRecord.data[0]
+          if (record.status === CHECKIN_STATUS.MISSED) {
+            console.log(`用户 ${user.nickName} 条目 ${item.title} 已标记漏卡`)
+          } else {
+            console.log(`用户 ${user.nickName} 条目 ${item.title} 已完成打卡 ✓`)
+          }
         }
       }
     }
 
-    console.log('每日打卡检查完成，漏卡数量:', missedCount)
+    console.log('每日打卡检查完成')
+    console.log(`- 检查日期: ${todayStr}`)
+    console.log(`- 检查用户: ${users.data.length}`)
+    console.log(`- 检查条目: ${checkedItemCount}`)
+    console.log(`- 新增漏卡: ${missedCount}`)
 
     return {
       success: true,
       data: {
-        checkedDate: yesterdayStr,
+        checkedDate: todayStr,
         checkedUserCount: users.data.length,
+        checkedItemCount,
         missedCount
       }
     }
