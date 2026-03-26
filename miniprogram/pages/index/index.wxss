@@ -193,49 +193,4 @@
   flex: 1;
 }
 
-/* ========== 已登录：欢迎页 ========== */
-.welcome-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #FFF5F0 0%, #FFE8DC 100%);
-}
 
-.welcome-box {
-  width: 80%;
-  max-width: 600rpx;
-  padding: 80rpx 40rpx;
-  background: white;
-  border-radius: 30rpx;
-  box-shadow: 0 20rpx 60rpx rgba(255, 107, 53, 0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.avatar {
-  width: 200rpx;
-  height: 200rpx;
-  border-radius: 50%;
-  margin-bottom: 40rpx;
-  border: 6rpx solid #FF6B35;
-  box-shadow: 0 8rpx 24rpx rgba(255, 107, 53, 0.3);
-}
-
-.welcome-text {
-  font-size: 40rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20rpx;
-}
-
-.partner-text {
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 60rpx;
-}
-
-.warning-color {
-  color: #FF6B35;
-}

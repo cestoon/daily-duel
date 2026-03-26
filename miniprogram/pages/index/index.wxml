@@ -1,7 +1,7 @@
 <!-- pages/index/index.wxml -->
 <view class="container">
-  <!-- 未登录：产品介绍页 -->
-  <view class="welcome-page" wx:if="{{!hasLogin}}">
+  <!-- 产品介绍页 -->
+  <view class="welcome-page">
     <!-- Logo和名称 -->
     <view class="header">
       <image class="logo" src="/assets/logo.png" mode="aspectFit"></image>
@@ -61,23 +61,6 @@
     </view>
   </view>
 
-  <!-- 已登录：欢迎页 -->
-  <view class="welcome-container" wx:else>
-    <view class="welcome-box">
-      <image class="avatar" src="{{user.avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
-      <text class="welcome-text">欢迎回来，{{user.nickName}}</text>
-      <text class="partner-text" wx:if="{{partner}}">
-        搭档：{{partner.nickName}}
-      </text>
-      <text class="partner-text warning-color" wx:else>
-        还没有绑定伙伴
-      </text>
-
-      <button class="btn btn-primary" bindtap="goToPK">
-        开始PK
-      </button>
-    </view>
-  </view>
 </view>
 
 <!-- 登录授权弹窗 -->

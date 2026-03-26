@@ -3,47 +3,27 @@ const app = getApp()
 
 Page({
   data: {
-    hasLogin: false,
     logining: false,
-    showLogin: false,  // 控制登录弹窗
-    user: null,
-    partner: null
+    showLogin: false  // 控制登录弹窗
   },
 
   onLoad() {
+    // 如果已登录，直接跳转到PK页
+    if (app.globalData.user) {
+      wx.switchTab({
+        url: '/pages/pk/pk'
+      })
+      return
+    }
+    
     this.checkLogin()
   },
 
   checkLogin() {
-    if (app.globalData.user) {
-      this.setData({
-        hasLogin: true,
-        user: app.globalData.user,
-        partner: app.globalData.partner
-      })
-
-      if (!app.globalData.partner) {
-        this.getPartnerInfo()
-      }
-    }
+    // 不需要了，已登录的话会直接跳转
   },
 
-  async getPartnerInfo() {
-    try {
-      const res = await wx.cloud.callFunction({
-        name: 'user-getPartner'
-      })
-      if (res.result.success && res.result.data) {
-        app.globalData.partner = res.result.data
-        app.saveLoginInfo()
-        this.setData({
-          partner: res.result.data
-        })
-      }
-    } catch (e) {
-      console.error('获取伙伴信息失败', e)
-    }
-  },
+
 
   async handleLogin() {
     if (this.data.logining) return
@@ -69,17 +49,18 @@ Page({
         app.globalData.user = res.result.data
         app.saveLoginInfo()
 
-        this.setData({
-          hasLogin: true,
-          user: res.result.data,
-          logining: false,
-          showLogin: false  // 关闭登录弹窗
-        })
-
         wx.showToast({
           title: '登录成功',
-          icon: 'success'
+          icon: 'success',
+          duration: 1500
         })
+
+        // 登录成功后跳转到PK页
+        setTimeout(() => {
+          wx.switchTab({
+            url: '/pages/pk/pk'
+          })
+        }, 1500)
       } else {
         wx.showToast({
           title: res.result.message || '登录失败',
@@ -114,11 +95,5 @@ Page({
   // 阻止冒泡
   stopPropagation() {
     // 空函数，阻止点击弹窗内容时关闭
-  },
-
-  goToPK() {
-    wx.switchTab({
-      url: '/pages/pk/pk'
-    })
   }
 })
