@@ -17,10 +17,17 @@
   margin-bottom: 80rpx;
 }
 
-.logo {
+.logo-placeholder {
   width: 160rpx;
   height: 160rpx;
   margin-bottom: 30rpx;
+  font-size: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  border-radius: 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 53, 0.3);
 }
 
 .app-name {
@@ -165,10 +172,17 @@
   align-items: center;
 }
 
-.modal-logo {
+.modal-logo-placeholder {
   width: 120rpx;
   height: 120rpx;
   margin-bottom: 30rpx;
+  font-size: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 53, 0.3);
 }
 
 .modal-desc {

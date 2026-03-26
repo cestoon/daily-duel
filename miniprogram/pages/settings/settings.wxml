@@ -115,7 +115,7 @@
     <view class="modal-content" catchtap="stopPropagation">
       <view class="modal-title">关于我们</view>
       <view class="about-content">
-        <text class="about-text">情侣打卡PK小程序</text>
+        <text class="about-text">伙伴打卡PK小程序</text>
         <text class="about-version">版本 1.0.0</text>
         <text class="about-desc">让爱与习惯一起成长</text>
         <view class="about-links">
