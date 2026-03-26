@@ -4,7 +4,9 @@ const app = getApp()
 Page({
   data: {
     logining: false,
-    showLogin: false  // 控制登录弹窗
+    showLogin: false,  // 控制登录弹窗
+    avatarUrl: '',     // 用户头像
+    nickName: ''       // 用户昵称
   },
 
   onLoad() {
@@ -25,23 +27,42 @@ Page({
 
 
 
+  // 选择头像
+  onChooseAvatar(e) {
+    const { avatarUrl } = e.detail
+    this.setData({
+      avatarUrl
+    })
+  },
+
+  // 昵称输入
+  onNicknameBlur(e) {
+    this.setData({
+      nickName: e.detail.value.trim()
+    })
+  },
+
   async handleLogin() {
     if (this.data.logining) return
+
+    // 检查头像和昵称
+    if (!this.data.avatarUrl || !this.data.nickName) {
+      wx.showToast({
+        title: '请完善头像和昵称',
+        icon: 'none'
+      })
+      return
+    }
 
     this.setData({ logining: true })
 
     try {
-      // 获取用户信息
-      const userInfoRes = await wx.getUserProfile({
-        desc: '用于完善用户资料'
-      })
-
       // 调用登录云函数
       const res = await wx.cloud.callFunction({
         name: 'user-login',
         data: {
-          nickName: userInfoRes.userInfo.nickName,
-          avatarUrl: userInfoRes.userInfo.avatarUrl
+          nickName: this.data.nickName,
+          avatarUrl: this.data.avatarUrl
         }
       })
 

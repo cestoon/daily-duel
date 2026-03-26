@@ -73,16 +73,37 @@
 
     <view class="modal-body">
       <view class="modal-logo-placeholder">💪</view>
-      <text class="modal-desc">需要获取您的昵称和头像</text>
-      <text class="modal-hint">用于完善个人资料和伙伴识别</text>
+      <text class="modal-desc">完善个人资料</text>
+      <text class="modal-hint">用于伙伴识别</text>
+      
+      <!-- 头像选择 -->
+      <view class="profile-section">
+        <text class="profile-label">选择头像</text>
+        <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image class="avatar" src="{{avatarUrl || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+          <view class="avatar-tip">点击选择</view>
+        </button>
+      </view>
+
+      <!-- 昵称输入 -->
+      <view class="profile-section">
+        <text class="profile-label">输入昵称</text>
+        <input 
+          class="nickname-input" 
+          type="nickname" 
+          placeholder="请输入昵称"
+          value="{{nickName}}"
+          bindblur="onNicknameBlur"
+        />
+      </view>
     </view>
 
     <view class="modal-footer">
       <button class="btn btn-secondary" bindtap="hideLoginModal">
         取消
       </button>
-      <button class="btn btn-primary" bindtap="handleLogin" disabled="{{logining}}">
-        {{logining ? '登录中...' : '授权登录'}}
+      <button class="btn btn-primary" bindtap="handleLogin" disabled="{{logining || !avatarUrl || !nickName}}">
+        {{logining ? '登录中...' : '完成登录'}}
       </button>
     </view>
   </view>
