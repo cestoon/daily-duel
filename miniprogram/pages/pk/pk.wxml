@@ -42,8 +42,8 @@
 
     <!-- 漏卡数值标注（放在血条下方更清晰） -->
     <view class="pk-legend">
-      <text class="legend-item legend-mine">我的漏卡: {{myMissedPoints}}分</text>
       <text class="legend-item legend-partner">TA的漏卡: {{partnerMissedPoints}}分</text>
+      <text class="legend-item legend-mine">我的漏卡: {{myMissedPoints}}分</text>
     </view>
 
     <view class="pk-status">

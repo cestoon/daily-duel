@@ -78,7 +78,9 @@ async function generateUniqueInviteCode() {
 }
 
 exports.main = async (event) => {
-  const { nickName, avatarUrl } = event
+  // 使用默认值（如果前端没传）
+  const nickName = event.nickName || '微信用户'
+  const avatarUrl = event.avatarUrl || 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132'
   const wxContext = cloud.getWXContext()
   const openid = wxContext.OPENID
 
