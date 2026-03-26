@@ -5,6 +5,7 @@ Page({
   data: {
     hasLogin: false,
     logining: false,
+    showLogin: false,  // 控制登录弹窗
     user: null,
     partner: null
   },
@@ -71,7 +72,8 @@ Page({
         this.setData({
           hasLogin: true,
           user: res.result.data,
-          logining: false
+          logining: false,
+          showLogin: false  // 关闭登录弹窗
         })
 
         wx.showToast({
@@ -93,6 +95,25 @@ Page({
       })
       this.setData({ logining: false })
     }
+  },
+
+  // 显示登录弹窗
+  showLoginModal() {
+    this.setData({
+      showLogin: true
+    })
+  },
+
+  // 隐藏登录弹窗
+  hideLoginModal() {
+    this.setData({
+      showLogin: false
+    })
+  },
+
+  // 阻止冒泡
+  stopPropagation() {
+    // 空函数，阻止点击弹窗内容时关闭
   },
 
   goToPK() {

@@ -1,81 +1,199 @@
 /* pages/index/index.wxss */
-.login-container {
+
+/* ========== 未登录：产品介绍页 ========== */
+.welcome-page {
   min-height: 100vh;
+  background: linear-gradient(135deg, #FFF5F0 0%, #FFE8DC 100%);
+  padding: 60rpx 40rpx 100rpx;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
-  position: relative;
-  overflow: hidden;
+  flex-direction: column;
 }
 
-.login-container::before {
-  content: '';
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-  animation: pulse 3s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.1); opacity: 0.8; }
-}
-
-.login-box {
-  width: 80%;
-  max-width: 600rpx;
-  padding: 80rpx 40rpx;
-  background: white;
-  border-radius: 30rpx;
-  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.2);
+/* Logo区域 */
+.header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 80rpx;
 }
 
 .logo {
   width: 160rpx;
   height: 160rpx;
-  margin-bottom: 40rpx;
+  margin-bottom: 30rpx;
 }
 
 .app-name {
   font-size: 56rpx;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 20rpx;
+  color: #1E3A8A;
+  margin-bottom: 16rpx;
 }
 
-.app-desc {
+.app-slogan {
   font-size: 28rpx;
+  color: #666;
+}
+
+/* 功能列表 */
+.features {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  margin-bottom: 60rpx;
+}
+
+.feature-item {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.feature-icon {
+  font-size: 72rpx;
+  margin-right: 30rpx;
+}
+
+.feature-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.feature-desc {
+  font-size: 26rpx;
   color: #999;
-  margin-bottom: 80rpx;
+}
+
+/* 操作按钮 */
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .btn {
   width: 100%;
-  margin-bottom: 20rpx;
 }
 
-.tips {
+.hint {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40rpx;
+  margin-top: 30rpx;
 }
 
-.tip-icon {
-  font-size: 40rpx;
-  margin-right: 16rpx;
+.hint-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
 }
 
-.tip-text {
+.hint-text {
   font-size: 24rpx;
   color: #999;
 }
 
+/* 底部说明 */
+.footer {
+  margin-top: 40rpx;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* ========== 登录弹窗 ========== */
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.login-modal-content {
+  width: 85%;
+  max-width: 600rpx;
+  background: white;
+  border-radius: 30rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+  padding: 0 10rpx;
+}
+
+.modal-body {
+  padding: 60rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-logo {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.modal-desc {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.modal-hint {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+}
+
+.modal-footer {
+  padding: 30rpx 40rpx 40rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.modal-footer .btn {
+  flex: 1;
+}
+
+/* ========== 已登录：欢迎页 ========== */
 .welcome-container {
   min-height: 100vh;
   display: flex;
@@ -94,12 +212,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.login-box,
-.welcome-box {
-  position: relative;
-  z-index: 1;
 }
 
 .avatar {
@@ -122,4 +234,8 @@
   font-size: 28rpx;
   color: #666;
   margin-bottom: 60rpx;
+}
+
+.warning-color {
+  color: #FF6B35;
 }
