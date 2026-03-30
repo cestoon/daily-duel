@@ -9,6 +9,7 @@ Page({
     partnerId: '',
     reminderEnabled: false,
     reminderTime: '21:00',
+    weekendSkip: false,  // 周末免打卡
     showBindModal: false,
     showAboutModal: false,
     bindCode: '',
@@ -28,7 +29,8 @@ Page({
       await Promise.all([
         this.getUserInfo(),
         this.getPartnerInfo(),
-        this.getReminderConfig()
+        this.getReminderConfig(),
+        this.getWeekendSkipConfig()
       ])
     } catch (e) {
       console.error('加载数据失败', e)
@@ -87,6 +89,25 @@ Page({
       reminderEnabled: savedConfig.enabled,
       reminderTime: savedConfig.time
     })
+  },
+
+  async getWeekendSkipConfig() {
+    // 从用户信息中读取周末免打卡配置
+    if (app.globalData.user?.weekendSkip !== undefined) {
+      this.setData({
+        weekendSkip: app.globalData.user.weekendSkip
+      })
+    } else {
+      // 如果用户数据中没有，从云端获取
+      const res = await wx.cloud.callFunction({
+        name: 'user-getInfo'
+      })
+      if (res.result.success && res.result.data.weekendSkip !== undefined) {
+        this.setData({
+          weekendSkip: res.result.data.weekendSkip
+        })
+      }
+    }
   },
 
   showBindModal() {
@@ -223,6 +244,47 @@ Page({
       time: e.detail.value
     }
     wx.setStorageSync('reminderConfig', config)
+  },
+
+  async toggleWeekendSkip(e) {
+    const enabled = e.detail.value
+    this.setData({ weekendSkip: enabled })
+
+    try {
+      // 调用云函数更新配置
+      const res = await wx.cloud.callFunction({
+        name: 'user-updateWeekendSkip',
+        data: { weekendSkip: enabled }
+      })
+
+      if (res.result.success) {
+        // 更新本地缓存
+        if (app.globalData.user) {
+          app.globalData.user.weekendSkip = enabled
+          app.saveLoginInfo()
+        }
+
+        wx.showToast({
+          title: enabled ? '已开启周末免打卡' : '已关闭周末免打卡',
+          icon: 'success'
+        })
+      } else {
+        // 恢复原状态
+        this.setData({ weekendSkip: !enabled })
+        wx.showToast({
+          title: '设置失败，请重试',
+          icon: 'none'
+        })
+      }
+    } catch (e) {
+      console.error('更新周末免打卡配置失败', e)
+      // 恢复原状态
+      this.setData({ weekendSkip: !enabled })
+      wx.showToast({
+        title: '设置失败，请重试',
+        icon: 'error'
+      })
+    }
   },
 
   showAbout() {

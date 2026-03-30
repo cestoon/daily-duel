@@ -29,9 +29,10 @@ function getSundayOfWeek(date) {
 exports.main = async (event) => {
   const now = new Date()
   const todayStr = formatDate(now)
+  const dayOfWeek = now.getDay() // 0=周日, 6=周六
 
   try {
-    console.log('开始每日打卡检查（23:59）:', todayStr)
+    console.log('开始每日打卡检查（23:59）:', todayStr, `星期${dayOfWeek === 0 ? '日' : dayOfWeek}`)
 
     // 获取所有活跃周期的用户
     const activePeriods = await db.collection(COLLECTIONS.PERIOD).where({
@@ -62,6 +63,15 @@ exports.main = async (event) => {
 
     // 检查每个用户今天的打卡情况
     for (const user of users.data) {
+      // 检查用户是否开启周末免打卡
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6 // 周六或周日
+      const weekendSkipEnabled = user.weekendSkip === true
+
+      if (isWeekend && weekendSkipEnabled) {
+        console.log(`用户 ${user.nickName} 开启了周末免打卡，跳过今日检查`)
+        continue
+      }
+
       // 获取用户的所有启用的打卡条目
       const items = await db.collection(COLLECTIONS.CHECKIN_ITEM).where({
         userId: user._id,

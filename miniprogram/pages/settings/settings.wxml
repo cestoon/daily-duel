@@ -70,6 +70,26 @@
     </view>
   </view>
 
+  <!-- 打卡规则 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">打卡规则</text>
+    </view>
+    <view class="card-body">
+      <view class="setting-item flex-between">
+        <view class="setting-label-group">
+          <text class="setting-label">周末免打卡</text>
+          <text class="setting-hint">周六日不打卡不算漏卡</text>
+        </view>
+        <switch
+          class="switch"
+          checked="{{weekendSkip}}"
+          bindchange="toggleWeekendSkip"
+        />
+      </view>
+    </view>
+  </view>
+
   <!-- 其他设置 -->
   <view class="card">
     <view class="card-header">

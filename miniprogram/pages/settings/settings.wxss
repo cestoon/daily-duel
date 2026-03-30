@@ -181,6 +181,17 @@
   color: #333;
 }
 
+.setting-label-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.setting-hint {
+  font-size: 24rpx;
+  color: #999;
+}
+
 .setting-arrow {
   font-size: 40rpx;
   color: #999;

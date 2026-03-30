@@ -1,0 +1,9 @@
+{
+  "name": "user-updateWeekendSkip",
+  "version": "1.0.0",
+  "description": "更新用户周末免打卡配置",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
