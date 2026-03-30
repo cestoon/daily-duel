@@ -49,6 +49,10 @@ exports.main = async (event) => {
       }
     }
 
+    // 获取用户配置（检查是否开启周末免打卡）
+    const userResult = await db.collection(COLLECTIONS.USER).doc(targetUserId).get()
+    const weekendSkip = userResult.data?.weekendSkip || false
+
     // 获取该周期的所有漏卡记录
     const recordsResult = await db.collection(COLLECTIONS.CHECKIN_RECORD).where({
       userId: targetUserId,
@@ -68,11 +72,22 @@ exports.main = async (event) => {
       }
     }
 
+    // ✅ 过滤周末漏卡（如果用户开启了周末免打卡）
+    let filteredRecords = recordsResult.data
+    if (weekendSkip) {
+      filteredRecords = recordsResult.data.filter(record => {
+        const recordDate = new Date(record.date)
+        const day = recordDate.getDay()
+        // 0=周日, 6=周六
+        return day !== 0 && day !== 6
+      })
+    }
+
     // ✅ 优先使用记录中的快照积分（防止条目删除后丢失积分）
     let totalMissedPoints = 0
     const missingItemIds = []
 
-    for (const record of recordsResult.data) {
+    for (const record of filteredRecords) {
       if (record.itemPoints !== undefined) {
         // 有快照积分，直接使用
         totalMissedPoints += record.itemPoints
@@ -94,7 +109,7 @@ exports.main = async (event) => {
       })
 
       // 补充旧数据的积分
-      for (const record of recordsResult.data) {
+      for (const record of filteredRecords) {
         if (record.itemPoints === undefined) {
           totalMissedPoints += itemsMap[record.itemId] || 10
         }
@@ -107,7 +122,10 @@ exports.main = async (event) => {
         userId: targetUserId,
         periodId: targetPeriodId,
         totalMissedPoints,
-        missedCount: recordsResult.data.length
+        missedCount: filteredRecords.length,
+        weekendSkip: weekendSkip,
+        totalRecords: recordsResult.data.length,
+        filteredRecords: filteredRecords.length
       }
     }
   } catch (error) {

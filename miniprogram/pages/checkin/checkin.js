@@ -1,20 +1,25 @@
 // pages/checkin/checkin.js
 const { getToday, formatDate } = require('../../utils/util')
+const app = getApp()
 
 Page({
   data: {
     currentDate: '',
     isToday: true,
+    isWeekend: false,
+    weekendSkip: false,
     items: [],
     loading: true
   },
 
   onLoad() {
     const today = new Date()
+    const todayStr = getToday()
     this.setData({
-      currentDate: getToday(),
+      currentDate: todayStr,
       isToday: true
     })
+    this.checkWeekendStatus(todayStr)
     this.loadData()
   },
 
@@ -22,6 +27,21 @@ Page({
     if (this.data.isToday) {
       this.loadData()
     }
+  },
+
+  // 检查是否为周末以及用户是否开启周末免打卡
+  checkWeekendStatus(dateStr) {
+    const date = new Date(dateStr)
+    const day = date.getDay()
+    const isWeekend = day === 0 || day === 6
+
+    // 获取用户周末免打卡配置
+    const weekendSkip = app.globalData.user?.weekendSkip || false
+
+    this.setData({
+      isWeekend,
+      weekendSkip
+    })
   },
 
   async loadData() {
@@ -54,7 +74,18 @@ Page({
               if (record) {
                 item.checked = record.status === 'completed'
                 item.status = record.status
-                item.statusText = record.status === 'completed' ? '已完成' : '漏卡'
+                
+                // 🎯 周末免打卡逻辑
+                if (record.status === 'missed' && this.data.isWeekend && this.data.weekendSkip) {
+                  item.statusText = '周末免打卡'
+                } else {
+                  item.statusText = record.status === 'completed' ? '已完成' : '漏卡'
+                }
+              } else {
+                // 🎯 周末免打卡逻辑（未打卡的情况）
+                if (this.data.isWeekend && this.data.weekendSkip) {
+                  item.statusText = '周末免打卡'
+                }
               }
             })
           }
@@ -96,7 +127,18 @@ Page({
             if (record) {
               item.checked = record.status === 'completed'
               item.status = record.status
-              item.statusText = record.status === 'completed' ? '已完成' : '漏卡'
+              
+              // 🎯 周末免打卡逻辑
+              if (record.status === 'missed' && this.data.isWeekend && this.data.weekendSkip) {
+                item.statusText = '周末免打卡'
+              } else {
+                item.statusText = record.status === 'completed' ? '已完成' : '漏卡'
+              }
+            } else {
+              // 🎯 周末免打卡逻辑（未打卡的情况）
+              if (this.data.isWeekend && this.data.weekendSkip) {
+                item.statusText = '周末免打卡'
+              }
             }
           })
         }
@@ -210,6 +252,9 @@ Page({
       currentDate: newDate,
       isToday
     })
+
+    // 检查新日期的周末状态
+    this.checkWeekendStatus(newDate)
 
     // 无论是今日还是历史日期，都加载完整数据
     this.loadData()
