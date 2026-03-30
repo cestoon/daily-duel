@@ -397,5 +397,56 @@ Page({
         showCancel: false
       })
     }
+  },
+
+  // 🔄 手动结算
+  async manualSettlement() {
+    const confirmed = await wx.showModal({
+      title: '手动触发结算',
+      content: '这将立即执行上周的结算，创建新周期。确定继续吗？',
+      confirmText: '确定',
+      cancelText: '取消'
+    })
+
+    if (!confirmed.confirm) return
+
+    wx.showLoading({ title: '结算中...' })
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'timer-weeklySettlement'
+      })
+
+      wx.hideLoading()
+
+      if (res.result.success) {
+        const count = res.result.data.settlementCount || 0
+        wx.showModal({
+          title: '✅ 结算成功',
+          content: `已完成 ${count} 个周期的结算\n请切换到结算页查看`,
+          showCancel: false,
+          success: () => {
+            // 刷新页面数据
+            this.loadData()
+          }
+        })
+      } else {
+        wx.showModal({
+          title: '结算完成',
+          content: res.result.data?.message || '没有需要结算的周期',
+          showCancel: false
+        })
+      }
+
+      console.log('结算结果:', res.result)
+    } catch (error) {
+      wx.hideLoading()
+      console.error('结算失败:', error)
+      wx.showModal({
+        title: '❌ 结算失败',
+        content: error.message || '未知错误',
+        showCancel: false
+      })
+    }
   }
 })
