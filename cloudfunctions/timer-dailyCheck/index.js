@@ -30,9 +30,25 @@ exports.main = async (event) => {
   const now = new Date()
   const todayStr = formatDate(now)
   const dayOfWeek = now.getDay() // 0=周日, 6=周六
+  const currentHour = now.getHours()
+  const currentMinute = now.getMinutes()
 
   try {
-    console.log('开始每日打卡检查（23:59）:', todayStr, `星期${dayOfWeek === 0 ? '日' : dayOfWeek}`)
+    console.log('开始每日打卡检查（23:59）:', todayStr, `星期${dayOfWeek === 0 ? '日' : dayOfWeek}`, `时间: ${currentHour}:${currentMinute}`)
+
+    // 🔒 安全检查：只在23:00-23:59之间执行（防止误触发）
+    // 如果是手动触发或测试，可以通过 event.skipTimeCheck = true 跳过检查
+    if (!event.skipTimeCheck && currentHour !== 23) {
+      console.log('⚠️ 当前时间不是23点，跳过检查（防止误触发）')
+      return {
+        success: false,
+        message: '当前时间不是23点，跳过检查',
+        data: {
+          currentTime: `${currentHour}:${currentMinute}`,
+          expectedTime: '23:00-23:59'
+        }
+      }
+    }
 
     // 获取所有活跃周期的用户
     const activePeriods = await db.collection(COLLECTIONS.PERIOD).where({
